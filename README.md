@@ -11,6 +11,9 @@ It assumes you've *seen* programming before (you're in a CS program, after
 all) but re-teaches it from the ground up rather than assuming any of it is
 solid. Nothing here is skipped as "too basic to cover."
 
+**New here?** Start with [`GETTING_STARTED.md`](GETTING_STARTED.md) — clone,
+open, run your first week's tests, in five steps.
+
 **Working through this in IntelliJ?** See [`INTELLIJ_SETUP.md`](INTELLIJ_SETUP.md) —
 the repo opens as one project with every Java week's tests and demo apps
 already wired into the Run Configuration dropdown, so you can work
