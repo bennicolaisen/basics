@@ -1,0 +1,7 @@
+The quick brown fox jumps over the lazy dog. The dog barks, but the fox
+is already gone, sprinting across the field like it owns the place.
+
+Programming, like language, rewards repetition. The more you read code,
+the more the patterns start to look familiar instead of foreign. Read
+it again. Read it once more. Eventually the words on the screen stop
+feeling like an obstacle and start feeling like a tool.

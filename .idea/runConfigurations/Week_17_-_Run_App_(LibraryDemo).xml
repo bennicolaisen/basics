@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 17 - Run App (LibraryDemo)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.crashcourse.week17.LibraryDemo" />
+    <module name="week17" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

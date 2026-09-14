@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 17 - Run Tests" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <MavenSimpleSettings>
+        <option name="workingDirPath" value="$PROJECT_DIR$/Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system" />
+        <option name="explicitGoalList">
+          <list>
+            <option value="clean" />
+            <option value="test" />
+          </list>
+        </option>
+      </MavenSimpleSettings>
+    </MavenSettings>
+    <method v="2" />
+  </configuration>
+</component>

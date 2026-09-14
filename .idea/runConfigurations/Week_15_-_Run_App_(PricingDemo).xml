@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 15 - Run App (PricingDemo)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.crashcourse.week15.PricingDemo" />
+    <module name="week15" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Month-4-Testing-Debugging-and-Capstone/Week-15-debugging-clinic" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

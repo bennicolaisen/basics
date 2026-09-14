@@ -1,0 +1,15 @@
+# Java / Maven
+target/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# IntelliJ - keep only the shared, hand-authored Run Configurations;
+# everything else under .idea/ is machine-specific and IDE-generated.
+.idea/*
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml

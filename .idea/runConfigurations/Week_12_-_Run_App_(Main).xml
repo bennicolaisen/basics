@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 12 - Run App (Main)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.crashcourse.week12.Main" />
+    <module name="week12-java-collections-catalog" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Month-3-OOP-and-Java-Bridge/Week-12-java-collections-catalog" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

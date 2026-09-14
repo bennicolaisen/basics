@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 10 - Run App (Main)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.crashcourse.week10.Main" />
+    <module name="week10-java-bridge" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Month-3-OOP-and-Java-Bridge/Week-10-java-bridge" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

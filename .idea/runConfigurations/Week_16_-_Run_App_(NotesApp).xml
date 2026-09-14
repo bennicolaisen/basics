@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Week 16 - Run App (NotesApp)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.crashcourse.week16.NotesApp" />
+    <module name="week16" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Month-4-Testing-Debugging-and-Capstone/Week-16-git-workflow-lab" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

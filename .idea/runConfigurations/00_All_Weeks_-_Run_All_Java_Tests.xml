@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="00 All Weeks - Run All Java Tests" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <MavenSimpleSettings>
+        <option name="workingDirPath" value="$PROJECT_DIR$" />
+        <option name="explicitGoalList">
+          <list>
+            <option value="clean" />
+            <option value="test" />
+          </list>
+        </option>
+      </MavenSimpleSettings>
+    </MavenSettings>
+    <method v="2" />
+  </configuration>
+</component>

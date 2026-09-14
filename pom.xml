@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.crashcourse</groupId>
+    <artifactId>basics-course</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Basics - Coding Crash Course</name>
+    <description>
+        Root aggregator for every Java week of the crash course (Weeks 10-17).
+        Opening this pom.xml in IntelliJ ("Open" -&gt; select the repository
+        root) imports all eight modules at once, so every week's code, tests,
+        and Run Configurations are available from a single project window.
+        Python weeks (1-9) live alongside these modules but are not part of
+        the Maven reactor - see INTELLIJ_SETUP.md for how to run them.
+    </description>
+
+    <!--
+        This is an aggregator, not a parent: each week's pom.xml stays fully
+        standalone (its own groupId/version/dependencies), exactly as
+        verified when it was built, so `mvn test` still works from inside
+        any single week's directory too. Listing the modules here only adds
+        the ability to build/test all of them together, e.g. from the
+        repository root: `mvn clean test`.
+    -->
+    <modules>
+        <module>Month-3-OOP-and-Java-Bridge/Week-10-java-bridge</module>
+        <module>Month-3-OOP-and-Java-Bridge/Week-11-java-oop-shapes</module>
+        <module>Month-3-OOP-and-Java-Bridge/Week-12-java-collections-catalog</module>
+        <module>Month-4-Testing-Debugging-and-Capstone/Week-13-java-exceptions-parser</module>
+        <module>Month-4-Testing-Debugging-and-Capstone/Week-14-java-junit-testing</module>
+        <module>Month-4-Testing-Debugging-and-Capstone/Week-15-debugging-clinic</module>
+        <module>Month-4-Testing-Debugging-and-Capstone/Week-16-git-workflow-lab</module>
+        <module>Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system</module>
+    </modules>
+</project>
