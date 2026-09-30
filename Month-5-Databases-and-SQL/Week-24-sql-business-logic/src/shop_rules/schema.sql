@@ -1,0 +1,151 @@
+-- The order system for the weather-gear shop from Week 23.
+--
+-- Every business rule the shop has is written down here, so it holds for
+-- every program (and every person at a SQL prompt) that touches the data:
+--
+--   1. Stock can never go negative: an order can't take more than is on the shelf.
+--   2. Placing an order takes its items out of stock; cancelling puts them back.
+--   3. A line's price is the price when the order was placed, whatever happens later.
+--   4. Orders move open -> paid -> shipped, or open -> cancelled, and never backwards.
+--   5. Only open orders can get new lines; lines are never edited or deleted.
+--   6. An empty order can't be paid for.
+--   7. Every price change is recorded in price_history.
+--   8. Orders of 1,000 SEK or more get 10% off (computed in the order_totals view).
+
+CREATE TABLE IF NOT EXISTS products (
+    id         INTEGER PRIMARY KEY,
+    sku        TEXT    NOT NULL UNIQUE,              -- stock-keeping unit: the shop's own product code
+    name       TEXT    NOT NULL,
+    price_sek  REAL    NOT NULL CHECK (price_sek > 0),
+    stock      INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0)  -- rule 1, last line of defense
+);
+
+CREATE TABLE IF NOT EXISTS price_history (
+    id             INTEGER PRIMARY KEY,
+    product_id     INTEGER NOT NULL REFERENCES products (id),
+    old_price_sek  REAL    NOT NULL,
+    new_price_sek  REAL    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id        INTEGER PRIMARY KEY,
+    customer  TEXT    NOT NULL,
+    status    TEXT    NOT NULL DEFAULT 'open'
+                      CHECK (status IN ('open', 'paid', 'shipped', 'cancelled'))
+);
+
+CREATE TABLE IF NOT EXISTS order_lines (
+    order_id        INTEGER NOT NULL REFERENCES orders (id),
+    product_id      INTEGER NOT NULL REFERENCES products (id),
+    quantity        INTEGER NOT NULL CHECK (quantity > 0),
+    unit_price_sek  REAL    NOT NULL,  -- rule 3: copied from products.price_sek when the line is added
+    PRIMARY KEY (order_id, product_id)
+);
+
+-- Rule 1, with a clear message instead of "CHECK constraint failed: stock >= 0".
+CREATE TRIGGER IF NOT EXISTS order_lines_need_stock
+BEFORE INSERT ON order_lines
+WHEN NEW.quantity > (SELECT stock FROM products WHERE id = NEW.product_id)
+BEGIN
+    SELECT RAISE(ABORT, 'not enough stock');
+END;
+
+-- Rule 2, first half.
+CREATE TRIGGER IF NOT EXISTS order_lines_take_stock
+AFTER INSERT ON order_lines
+BEGIN
+    UPDATE products SET stock = stock - NEW.quantity WHERE id = NEW.product_id;
+END;
+
+-- Rule 5.
+CREATE TRIGGER IF NOT EXISTS order_lines_only_on_open_orders
+BEFORE INSERT ON order_lines
+WHEN (SELECT status FROM orders WHERE id = NEW.order_id) <> 'open'
+BEGIN
+    SELECT RAISE(ABORT, 'order is not open');
+END;
+
+CREATE TRIGGER IF NOT EXISTS order_lines_are_not_edited
+BEFORE UPDATE ON order_lines
+BEGIN
+    SELECT RAISE(ABORT, 'order lines cannot be changed; cancel the order instead');
+END;
+
+CREATE TRIGGER IF NOT EXISTS order_lines_are_not_deleted
+BEFORE DELETE ON order_lines
+BEGIN
+    SELECT RAISE(ABORT, 'order lines cannot be deleted; cancel the order instead');
+END;
+
+-- Rule 4. OLD is the row before the update, NEW the row after it.
+CREATE TRIGGER IF NOT EXISTS orders_status_flow
+BEFORE UPDATE OF status ON orders
+WHEN NOT (
+       NEW.status = OLD.status
+    OR (OLD.status = 'open' AND NEW.status IN ('paid', 'cancelled'))
+    OR (OLD.status = 'paid' AND NEW.status = 'shipped')
+)
+BEGIN
+    SELECT RAISE(ABORT, 'invalid status change');
+END;
+
+-- Rule 6.
+CREATE TRIGGER IF NOT EXISTS orders_pay_needs_lines
+BEFORE UPDATE OF status ON orders
+WHEN NEW.status = 'paid'
+ AND NOT EXISTS (SELECT 1 FROM order_lines WHERE order_id = NEW.id)
+BEGIN
+    SELECT RAISE(ABORT, 'cannot pay for an empty order');
+END;
+
+-- Rule 2, second half.
+CREATE TRIGGER IF NOT EXISTS orders_cancel_returns_stock
+AFTER UPDATE OF status ON orders
+WHEN NEW.status = 'cancelled' AND OLD.status <> 'cancelled'
+BEGIN
+    UPDATE products
+    SET stock = stock + (SELECT l.quantity FROM order_lines AS l
+                         WHERE l.order_id = NEW.id AND l.product_id = products.id)
+    WHERE id IN (SELECT product_id FROM order_lines WHERE order_id = NEW.id);
+END;
+
+-- Rule 7.
+CREATE TRIGGER IF NOT EXISTS products_price_history
+AFTER UPDATE OF price_sek ON products
+WHEN NEW.price_sek <> OLD.price_sek
+BEGIN
+    INSERT INTO price_history (product_id, old_price_sek, new_price_sek)
+    VALUES (NEW.id, OLD.price_sek, NEW.price_sek);
+END;
+
+-- Rule 8. A view is a stored query: every program that reads order_totals
+-- gets the same discount logic, instead of each reimplementing it.
+CREATE VIEW IF NOT EXISTS order_totals AS
+WITH subtotals AS (
+    SELECT o.id     AS order_id,
+           o.customer,
+           o.status,
+           COALESCE(SUM(l.quantity), 0)                    AS items,
+           COALESCE(SUM(l.quantity * l.unit_price_sek), 0) AS subtotal_sek
+    FROM orders AS o
+    LEFT JOIN order_lines AS l ON l.order_id = o.id
+    GROUP BY o.id, o.customer, o.status
+),
+discounted AS (
+    SELECT *,
+           CASE WHEN subtotal_sek >= 1000 THEN subtotal_sek * 0.10 ELSE 0 END AS discount_sek
+    FROM subtotals
+)
+SELECT order_id,
+       customer,
+       status,
+       items,
+       ROUND(subtotal_sek, 2)                AS subtotal_sek,
+       ROUND(discount_sek, 2)                AS discount_sek,
+       ROUND(subtotal_sek - discount_sek, 2) AS total_sek
+FROM discounted;
+
+CREATE VIEW IF NOT EXISTS low_stock AS
+SELECT sku, name, stock
+FROM products
+WHERE stock < 5;

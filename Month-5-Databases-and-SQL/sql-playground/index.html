@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SQL Weather Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: lesson column on the left, workbench (editor, results, schema) on the right; stacks below 980px. */
+:root {
+  --bg: #ecf0f2;
+  --surface: #ffffff;
+  --surface-2: #f4f7f8;
+  --ink: #14212b;
+  --muted: #566674;
+  --line: #d2dbe1;
+  --accent: #0b6a87;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcedf2;
+  --good: #22764a;
+  --good-soft: #dff1e6;
+  --bad: #b0322b;
+  --bad-soft: #f8e2df;
+  --code-bg: #f1f4f6;
+  --kw: #0b6a87;
+  --str: #8a4a10;
+  --num: #6b3fa0;
+  --com: #768591;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e151b;
+    --surface: #151f27;
+    --surface-2: #1a2630;
+    --ink: #e2e9ee;
+    --muted: #98a8b4;
+    --line: #2a3945;
+    --accent: #55badb;
+    --accent-ink: #06222c;
+    --accent-soft: #143543;
+    --good: #5fca8d;
+    --good-soft: #14352a;
+    --bad: #f28b80;
+    --bad-soft: #3b1d1a;
+    --code-bg: #10191f;
+    --kw: #6fc8e6;
+    --str: #f0b47b;
+    --num: #c8a6f2;
+    --com: #7f909c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e151b;
+  --surface: #151f27;
+  --surface-2: #1a2630;
+  --ink: #e2e9ee;
+  --muted: #98a8b4;
+  --line: #2a3945;
+  --accent: #55badb;
+  --accent-ink: #06222c;
+  --accent-soft: #143543;
+  --good: #5fca8d;
+  --good-soft: #14352a;
+  --bad: #f28b80;
+  --bad-soft: #3b1d1a;
+  --code-bg: #10191f;
+  --kw: #6fc8e6;
+  --str: #f0b47b;
+  --num: #c8a6f2;
+  --com: #7f909c;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 var(--font-body);
+}
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-inline: 16px;
+  padding-block: 28px 48px;
+  display: grid;
+  gap: 24px;
+}
+code, pre, textarea, .mono { font-family: var(--font-mono); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+/* Header */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px 32px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+}
+.masthead h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.05; letter-spacing: -0.01em; }
+.masthead p { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+.progress { min-width: 200px; display: grid; gap: 6px; }
+.progress-label { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress-label strong { color: var(--ink); }
+.progress-track { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: var(--good); transition: width 0.3s ease; }
+
+/* Main grid */
+.layout { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 980px) {
+  .layout { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .lesson-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+}
+.lesson-col, .work-col { display: grid; gap: 20px; min-width: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  min-width: 0;
+}
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Lesson navigation */
+.lesson-nav { display: flex; flex-wrap: wrap; gap: 14px 18px; }
+.nav-group { display: grid; gap: 6px; }
+.nav-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 0.95rem var(--font-display);
+  cursor: pointer;
+  position: relative;
+  font-variant-numeric: tabular-nums;
+}
+.nav-btn:hover { border-color: var(--accent); }
+.nav-btn[aria-current="step"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.nav-btn.solved { border-color: var(--good); }
+.nav-btn.solved::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--good);
+  border: 2px solid var(--surface);
+}
+
+/* Lesson body */
+.lesson { display: grid; gap: 14px; }
+.lesson h2 { font-size: 1.6rem; line-height: 1.15; }
+.lesson-body { display: grid; gap: 10px; }
+.lesson-body p { margin: 0; max-width: 65ch; }
+.lesson-body code, .task code, .feedback code {
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 0.88em;
+}
+.example { display: grid; gap: 8px; }
+.code-block {
+  margin: 0;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+.tok-kw { color: var(--kw); font-weight: 500; }
+.tok-str { color: var(--str); }
+.tok-num { color: var(--num); }
+.tok-com { color: var(--com); font-style: italic; }
+
+.task {
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 10px;
+}
+.task h3 { font-size: 1rem; letter-spacing: 0.01em; }
+.task p { margin: 0; }
+.task-source { font-size: 0.85rem; color: var(--muted); }
+.hint { font-size: 0.95rem; color: var(--ink); border-top: 1px dashed var(--line); padding-top: 10px; }
+
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn {
+  font: 700 0.92rem var(--font-body);
+  border-radius: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--muted); }
+.btn-quiet:hover { color: var(--ink); border-color: var(--line); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.pager { display: flex; justify-content: space-between; gap: 8px; }
+
+/* Clause order reference */
+.clauses { display: grid; gap: 10px; }
+.clause-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; counter-reset: clause; }
+.clause-list li {
+  counter-increment: clause;
+  font: 500 0.82rem var(--font-mono);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.clause-list li::before { content: counter(clause) " "; color: var(--muted); }
+.clauses p { margin: 0; font-size: 0.92rem; color: var(--muted); max-width: 65ch; }
+
+/* Workbench */
+.editor-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.editor-head h2 { font-size: 1.15rem; }
+.kbd-hint { font-size: 0.85rem; color: var(--muted); }
+kbd {
+  font: 500 0.8rem var(--font-mono);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 5px;
+  background: var(--surface-2);
+}
+#sql-editor {
+  width: 100%;
+  min-height: 170px;
+  resize: vertical;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--code-bg);
+  color: var(--ink);
+  tab-size: 2;
+}
+#sql-editor:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.editor-actions { margin-top: 12px; justify-content: space-between; }
+
+.result-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 10px; }
+.result-head h2 { font-size: 1.15rem; }
+#status { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+#status.error { color: var(--bad); }
+
+.feedback {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid;
+  display: grid;
+  gap: 6px;
+}
+.feedback p { margin: 0; }
+.feedback.good { background: var(--good-soft); border-color: var(--good); }
+.feedback.bad { background: var(--bad-soft); border-color: var(--bad); }
+.feedback strong { font-family: var(--font-display); font-size: 1.05rem; }
+
+.table-wrap { overflow-x: auto; max-height: 460px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 12px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--line); }
+th { position: sticky; top: 0; background: var(--surface-2); font: 500 0.82rem var(--font-mono); color: var(--muted); }
+td.num { text-align: right; }
+td.null { color: var(--com); font-style: italic; }
+tbody tr:last-child td { border-bottom: none; }
+.empty { padding: 18px; color: var(--muted); text-align: center; }
+
+.schema-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.schema-table h3 { font: 500 0.95rem var(--font-mono); margin-bottom: 6px; }
+.schema-table p { margin: 0 0 8px; font-size: 0.88rem; color: var(--muted); }
+.schema-table table { font-size: 0.84rem; }
+.schema-table td { white-space: normal; vertical-align: top; }
+.schema-table td:first-child { font-family: var(--font-mono); white-space: nowrap; }
+.schema-table td.type { color: var(--muted); font-family: var(--font-mono); font-size: 0.78rem; }
+
+.schema-subhead { margin: 20px 0 10px; }
+.schema-subhead.first { margin-top: 0; }
+.footnote { font-size: 0.85rem; color: var(--muted); max-width: 80ch; }
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Basics course · Month 5 · SQL levels 1–3</div>
+      <h1>SQL Weather Lab</h1>
+      <p>Sixteen short exercises in three levels, on a week of Nordic weather and the sales of a shop that sells weather gear. A real SQLite database runs in this page, so you can type any query, run it, and get your answer checked.</p>
+    </div>
+    <div class="progress" aria-live="polite">
+      <div class="progress-label"><strong id="solved-count">0</strong> of <span id="lesson-total">16</span> solved</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="lesson-col">
+      <nav class="panel" aria-label="Lessons">
+        <div class="lesson-nav" id="lesson-nav"></div>
+      </nav>
+
+      <article class="panel lesson" id="lesson" aria-live="polite">
+        <div class="eyebrow" id="lesson-week"></div>
+        <h2 id="lesson-title"></h2>
+        <div class="lesson-body" id="lesson-body"></div>
+        <div class="example">
+          <div class="row" style="justify-content: space-between;">
+            <span class="eyebrow">Example</span>
+            <button class="btn" type="button" id="load-example">Run example</button>
+          </div>
+          <pre class="code-block" id="lesson-example"></pre>
+        </div>
+        <section class="task" aria-labelledby="task-heading">
+          <h3 id="task-heading">Your task</h3>
+          <p id="task-text"></p>
+          <div class="task-source" id="task-source"></div>
+          <div class="row">
+            <button class="btn btn-primary" type="button" id="check-answer-2">Check answer</button>
+            <button class="btn" type="button" id="show-hint">Show hint</button>
+            <button class="btn btn-quiet" type="button" id="show-solution">Show solution</button>
+          </div>
+          <div class="hint" id="hint" hidden></div>
+        </section>
+        <div class="pager">
+          <button class="btn" type="button" id="prev-lesson">← Previous</button>
+          <button class="btn" type="button" id="next-lesson">Next →</button>
+        </div>
+      </article>
+
+      <section class="panel clauses" aria-labelledby="clauses-heading">
+        <h2 class="eyebrow" id="clauses-heading">Clause order</h2>
+        <ol class="clause-list">
+          <li>WITH</li><li>SELECT</li><li>FROM</li><li>JOIN … ON</li><li>WHERE</li><li>GROUP BY</li><li>HAVING</li><li>ORDER BY</li><li>LIMIT</li>
+        </ol>
+        <p>Write them in this order. The database evaluates them as FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT (window functions run here) → ORDER BY → LIMIT. That's why WHERE can't use an aggregate or a window function, and HAVING can use an aggregate.</p>
+      </section>
+    </div>
+
+    <div class="work-col">
+      <section class="panel" aria-labelledby="editor-heading">
+        <div class="editor-head">
+          <h2 id="editor-heading">Your SQL</h2>
+          <span class="kbd-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> runs</span>
+        </div>
+        <label for="sql-editor" class="eyebrow" hidden>SQL editor</label>
+        <textarea id="sql-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+        <div class="row editor-actions">
+          <div class="row">
+            <button class="btn btn-primary" type="button" id="run-sql" disabled>Run</button>
+            <button class="btn" type="button" id="check-answer" disabled>Check answer</button>
+          </div>
+          <button class="btn btn-quiet" type="button" id="reset-db" disabled>Reset database</button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="result-heading">
+        <div class="result-head">
+          <h2 id="result-heading">Result</h2>
+          <span id="status" role="status">Loading SQLite…</span>
+        </div>
+        <div id="feedback"></div>
+        <div id="result"><div class="table-wrap"><div class="empty">The database is loading. Lesson 1's example will run as soon as it's ready.</div></div></div>
+      </section>
+
+      <section class="panel" aria-labelledby="schema-heading">
+        <div class="editor-head">
+          <h2 id="schema-heading">The database</h2>
+          <span class="kbd-hint">Monday 2026-09-21 to Sunday 2026-09-27</span>
+        </div>
+        <h3 class="eyebrow schema-subhead first">Weather (all levels)</h3>
+        <div class="schema-grid">
+          <div class="schema-table">
+            <h3>cities</h3>
+            <p>8 rows. One row per city.</p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>id</td><td class="type">INTEGER</td><td>primary key</td></tr>
+                  <tr><td>name</td><td class="type">TEXT</td><td>unique</td></tr>
+                  <tr><td>country</td><td class="type">TEXT</td><td>Sweden, Norway or Denmark</td></tr>
+                  <tr><td>population</td><td class="type">INTEGER</td><td>rounded</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="schema-table">
+            <h3>observations</h3>
+            <p>49 rows. One city's weather on one day.</p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>id</td><td class="type">INTEGER</td><td>primary key</td></tr>
+                  <tr><td>city_id</td><td class="type">INTEGER</td><td>→ cities.id</td></tr>
+                  <tr><td>observed_on</td><td class="type">TEXT</td><td>'YYYY-MM-DD'</td></tr>
+                  <tr><td>temp_max_c</td><td class="type">REAL</td><td>daily high, °C</td></tr>
+                  <tr><td>temp_min_c</td><td class="type">REAL</td><td>daily low, °C</td></tr>
+                  <tr><td>precipitation_mm</td><td class="type">REAL</td><td>mm</td></tr>
+                  <tr><td>wind_ms</td><td class="type">REAL</td><td>m/s; NULL twice (sensor failure)</td></tr>
+                  <tr><td>conditions</td><td class="type">TEXT</td><td>'sun', 'cloud', 'rain' or 'snow'</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <h3 class="eyebrow schema-subhead">The shop (Level 3)</h3>
+        <div class="schema-grid">
+          <div class="schema-table">
+            <h3>products</h3>
+            <p>5 rows.</p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>id</td><td class="type">INTEGER</td><td>primary key</td></tr>
+                  <tr><td>name</td><td class="type">TEXT</td><td>'Umbrella', 'Rain jacket', …</td></tr>
+                  <tr><td>category</td><td class="type">TEXT</td><td>'rain', 'cold' or 'sun'</td></tr>
+                  <tr><td>list_price_sek</td><td class="type">REAL</td><td>kronor</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="schema-table">
+            <h3>stores</h3>
+            <p>7 rows. Store ids are not city ids.</p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>id</td><td class="type">INTEGER</td><td>primary key</td></tr>
+                  <tr><td>city_id</td><td class="type">INTEGER</td><td>→ cities.id</td></tr>
+                  <tr><td>opened_on</td><td class="type">TEXT</td><td>'YYYY-MM-DD'</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="schema-table">
+            <h3>daily_sales</h3>
+            <p>141 rows. No row means nothing sold.</p>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><td>store_id</td><td class="type">INTEGER</td><td>→ stores.id</td></tr>
+                  <tr><td>product_id</td><td class="type">INTEGER</td><td>→ products.id</td></tr>
+                  <tr><td>sold_on</td><td class="type">TEXT</td><td>'YYYY-MM-DD'</td></tr>
+                  <tr><td>units</td><td class="type">INTEGER</td><td>at least 1</td></tr>
+                  <tr><td>revenue_sek</td><td class="type">REAL</td><td>as charged; umbrellas 20% off on Sunday</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="footnote">The readings and sales are made up for teaching, not real data. Copenhagen has no observations and no store on purpose (lesson 11 uses that). Every change you make stays in this page until you press Reset database or reload. Each lesson's full explanation is in that week's README.md in the Month-5-Databases-and-SQL folder.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SEED_SQL = `-- The database used by Week 23: the weather data from Weeks 19-22, plus
+-- one week of sales from a (made-up) chain of weather-gear shops with one
+-- store in each of the seven cities that have observations.
+--
+-- Sales were generated from the weather, so the two can be analysed
+-- together: umbrellas sell on rainy days, wool socks when nights are cold,
+-- sunglasses when it's sunny. On Sunday 2026-09-27 umbrellas were on a
+-- 20% promotion, so that day's umbrella revenue is below units x list price.
+
+CREATE TABLE cities (
+    id          INTEGER PRIMARY KEY,
+    name        TEXT    NOT NULL UNIQUE,
+    country     TEXT    NOT NULL,
+    population  INTEGER NOT NULL
+);
+
+CREATE TABLE observations (
+    id                INTEGER PRIMARY KEY,
+    city_id           INTEGER NOT NULL REFERENCES cities (id),
+    observed_on       TEXT    NOT NULL,  -- ISO-8601 date: 'YYYY-MM-DD'
+    temp_max_c        REAL    NOT NULL,  -- daily high, degrees Celsius
+    temp_min_c        REAL    NOT NULL,  -- daily low, degrees Celsius
+    precipitation_mm  REAL    NOT NULL,  -- rain or snow (as water), millimetres
+    wind_ms           REAL,              -- mean wind speed, metres per second; NULL = sensor failure
+    conditions        TEXT    NOT NULL   -- 'sun', 'cloud', 'rain' or 'snow'
+);
+
+INSERT INTO cities (id, name, country, population) VALUES
+    (1, 'Stockholm',  'Sweden',  984748),
+    (2, 'Gothenburg', 'Sweden',  604616),
+    (3, 'Malmö',      'Sweden',  362133),
+    (4, 'Umeå',       'Sweden',  132235),
+    (5, 'Kiruna',     'Sweden',   22423),
+    (6, 'Visby',      'Sweden',   24330),
+    (7, 'Oslo',       'Norway',  717710),
+    (8, 'Copenhagen', 'Denmark', 660842);
+
+INSERT INTO observations
+    (id, city_id, observed_on, temp_max_c, temp_min_c, precipitation_mm, wind_ms, conditions)
+VALUES
+    -- Stockholm
+    ( 1, 1, '2026-09-21', 16.2,  9.1,  0.0,  4.2, 'sun'),
+    ( 2, 1, '2026-09-22', 15.4,  8.7,  1.2,  5.1, 'cloud'),
+    ( 3, 1, '2026-09-23', 13.8,  9.5,  6.4,  7.8, 'rain'),
+    ( 4, 1, '2026-09-24', 12.9,  8.2,  3.1,  6.5, 'rain'),
+    ( 5, 1, '2026-09-25', 14.6,  7.4,  0.0,  3.9, 'sun'),
+    ( 6, 1, '2026-09-26', 17.4,  6.8,  0.0,  3.2, 'sun'),
+    ( 7, 1, '2026-09-27', 13.2,  7.9,  0.4,  4.6, 'cloud'),
+    -- Gothenburg
+    ( 8, 2, '2026-09-21', 15.8, 10.2,  2.3,  6.9, 'cloud'),
+    ( 9, 2, '2026-09-22', 14.1, 10.8,  8.7, 11.4, 'rain'),
+    (10, 2, '2026-09-23', 13.5,  9.9, 12.1, 12.8, 'rain'),
+    (11, 2, '2026-09-24', 13.9,  9.1,  4.2,  8.6, 'rain'),
+    (12, 2, '2026-09-25', 15.2,  8.4,  0.3,  5.2, 'cloud'),
+    (13, 2, '2026-09-26', 16.4,  8.9,  0.0,  4.1, 'sun'),
+    (14, 2, '2026-09-27', 14.3,  9.6,  3.8,  7.3, 'rain'),
+    -- Malmö
+    (15, 3, '2026-09-21', 17.3, 11.0,  0.0,  5.4, 'sun'),
+    (16, 3, '2026-09-22', 16.8, 11.6,  0.8,  6.2, 'cloud'),
+    (17, 3, '2026-09-23', 15.1, 11.2,  5.6,  9.7, 'rain'),
+    (18, 3, '2026-09-24', 14.7, 10.4,  7.9, 10.6, 'rain'),
+    (19, 3, '2026-09-25', 16.0,  9.8,  1.1,  6.8, 'cloud'),
+    (20, 3, '2026-09-26', 17.9, 10.1,  0.0,  4.4, 'sun'),
+    (21, 3, '2026-09-27', 16.2, 10.9,  6.3,  8.9, 'rain'),
+    -- Umeå
+    (22, 4, '2026-09-21', 12.4,  4.1,  0.0,  3.1, 'sun'),
+    (23, 4, '2026-09-22', 11.2,  5.3,  2.4, NULL, 'cloud'),
+    (24, 4, '2026-09-23',  9.8,  3.6,  4.7,  6.2, 'rain'),
+    (25, 4, '2026-09-24',  8.5,  1.2,  3.3,  5.7, 'rain'),
+    (26, 4, '2026-09-25', 10.1, -0.8,  0.0,  2.6, 'sun'),
+    (27, 4, '2026-09-26', 11.7,  0.4,  0.0,  2.2, 'sun'),
+    (28, 4, '2026-09-27', 10.6,  2.8,  1.5,  4.0, 'cloud'),
+    -- Kiruna
+    (29, 5, '2026-09-21',  7.8,  0.9,  0.2,  3.4, 'cloud'),
+    (30, 5, '2026-09-22',  6.1, -1.4,  1.8,  4.6, 'cloud'),
+    (31, 5, '2026-09-23',  3.2, -2.6,  4.3,  7.1, 'snow'),
+    (32, 5, '2026-09-24',  2.7, -3.8,  2.9, NULL, 'snow'),
+    (33, 5, '2026-09-25',  5.4, -4.1,  0.0,  2.1, 'sun'),
+    (34, 5, '2026-09-26',  6.9, -1.9,  0.0,  1.8, 'sun'),
+    (35, 5, '2026-09-27',  5.2, -0.6,  1.1,  3.5, 'cloud'),
+    -- Visby
+    (36, 6, '2026-09-21', 15.6, 11.4,  0.0,  7.2, 'sun'),
+    (37, 6, '2026-09-22', 15.0, 11.9,  0.6,  9.4, 'cloud'),
+    (38, 6, '2026-09-23', 14.2, 11.1,  3.9, 13.6, 'rain'),
+    (39, 6, '2026-09-24', 13.6, 10.3,  5.2, 11.9, 'rain'),
+    (40, 6, '2026-09-25', 14.9,  9.7,  0.0,  6.1, 'sun'),
+    (41, 6, '2026-09-26', 16.1,  9.2,  0.0,  5.3, 'sun'),
+    (42, 6, '2026-09-27', 14.8, 10.6,  2.7,  8.1, 'cloud'),
+    -- Oslo
+    (43, 7, '2026-09-21', 14.9,  7.2,  0.0,  3.3, 'sun'),
+    (44, 7, '2026-09-22', 13.6,  8.1,  3.4,  4.9, 'rain'),
+    (45, 7, '2026-09-23', 12.1,  7.7,  9.8,  6.3, 'rain'),
+    (46, 7, '2026-09-24', 11.4,  6.5,  6.1,  5.8, 'rain'),
+    (47, 7, '2026-09-25', 13.0,  4.9,  0.0,  2.7, 'sun'),
+    (48, 7, '2026-09-26', 14.2,  5.3,  0.0,  2.4, 'sun'),
+    (49, 7, '2026-09-27', 12.8,  6.4,  2.2,  4.1, 'cloud');
+
+CREATE TABLE products (
+    id              INTEGER PRIMARY KEY,
+    name            TEXT    NOT NULL UNIQUE,
+    category        TEXT    NOT NULL,  -- the weather it sells in: 'rain', 'cold' or 'sun'
+    list_price_sek  REAL    NOT NULL   -- Swedish kronor, before any promotion
+);
+
+CREATE TABLE stores (
+    id         INTEGER PRIMARY KEY,
+    city_id    INTEGER NOT NULL UNIQUE REFERENCES cities (id),
+    opened_on  TEXT    NOT NULL
+);
+
+-- One row per store, product and day with at least one unit sold.
+-- A product that sold nothing that day has no row (not a row with 0).
+CREATE TABLE daily_sales (
+    store_id     INTEGER NOT NULL REFERENCES stores (id),
+    product_id   INTEGER NOT NULL REFERENCES products (id),
+    sold_on      TEXT    NOT NULL,
+    units        INTEGER NOT NULL CHECK (units > 0),
+    revenue_sek  REAL    NOT NULL,  -- what was actually charged, promotions included
+    PRIMARY KEY (store_id, product_id, sold_on)
+);
+
+INSERT INTO products (id, name, category, list_price_sek) VALUES
+    (1, 'Umbrella', 'rain', 199.00),
+    (2, 'Rain jacket', 'rain', 899.00),
+    (3, 'Wool socks', 'cold', 149.00),
+    (4, 'Thermos', 'cold', 279.00),
+    (5, 'Sunglasses', 'sun', 349.00);
+
+INSERT INTO stores (id, city_id, opened_on) VALUES
+    (1, 1, '2019-03-01'),
+    (2, 2, '2020-04-15'),
+    (3, 3, '2021-05-20'),
+    (4, 7, '2022-02-01'),
+    (5, 4, '2023-09-01'),
+    (6, 6, '2024-06-10'),
+    (7, 5, '2025-11-15');
+
+INSERT INTO daily_sales (store_id, product_id, sold_on, units, revenue_sek) VALUES
+    (1, 1, '2026-09-21',  3,   597.00),
+    (1, 2, '2026-09-21',  2,  1798.00),
+    (1, 3, '2026-09-21',  1,   149.00),
+    (1, 5, '2026-09-21',  8,  2792.00),
+    (1, 1, '2026-09-22',  5,   995.00),
+    (1, 2, '2026-09-22',  2,  1798.00),
+    (1, 3, '2026-09-22',  1,   149.00),
+    (1, 1, '2026-09-23', 13,  2587.00),
+    (1, 2, '2026-09-23',  4,  3596.00),
+    (1, 3, '2026-09-23',  1,   149.00),
+    (1, 1, '2026-09-24', 10,  1990.00),
+    (1, 2, '2026-09-24',  4,  3596.00),
+    (1, 3, '2026-09-24',  1,   149.00),
+    (1, 1, '2026-09-25',  3,   597.00),
+    (1, 2, '2026-09-25',  2,  1798.00),
+    (1, 3, '2026-09-25',  1,   149.00),
+    (1, 5, '2026-09-25',  7,  2443.00),
+    (1, 1, '2026-09-26',  3,   597.00),
+    (1, 2, '2026-09-26',  2,  1798.00),
+    (1, 3, '2026-09-26',  2,   298.00),
+    (1, 5, '2026-09-26',  8,  2792.00),
+    (1, 1, '2026-09-27',  4,   636.80),
+    (1, 2, '2026-09-27',  2,  1798.00),
+    (1, 3, '2026-09-27',  1,   149.00),
+    (2, 1, '2026-09-21',  5,   995.00),
+    (2, 2, '2026-09-21',  1,   899.00),
+    (2, 3, '2026-09-21',  1,   149.00),
+    (2, 1, '2026-09-22', 14,  2786.00),
+    (2, 2, '2026-09-22',  4,  3596.00),
+    (2, 3, '2026-09-22',  1,   149.00),
+    (2, 1, '2026-09-23', 18,  3582.00),
+    (2, 2, '2026-09-23',  4,  3596.00),
+    (2, 3, '2026-09-23',  1,   149.00),
+    (2, 1, '2026-09-24', 10,  1990.00),
+    (2, 2, '2026-09-24',  3,  2697.00),
+    (2, 3, '2026-09-24',  1,   149.00),
+    (2, 1, '2026-09-25',  3,   597.00),
+    (2, 2, '2026-09-25',  1,   899.00),
+    (2, 3, '2026-09-25',  1,   149.00),
+    (2, 1, '2026-09-26',  2,   398.00),
+    (2, 2, '2026-09-26',  1,   899.00),
+    (2, 3, '2026-09-26',  1,   149.00),
+    (2, 5, '2026-09-26',  6,  2094.00),
+    (2, 1, '2026-09-27',  9,  1432.80),
+    (2, 2, '2026-09-27',  3,  2697.00),
+    (2, 3, '2026-09-27',  1,   149.00),
+    (3, 1, '2026-09-21',  1,   199.00),
+    (3, 2, '2026-09-21',  1,   899.00),
+    (3, 5, '2026-09-21',  5,  1745.00),
+    (3, 1, '2026-09-22',  2,   398.00),
+    (3, 2, '2026-09-22',  1,   899.00),
+    (3, 1, '2026-09-23', 10,  1990.00),
+    (3, 2, '2026-09-23',  3,  2697.00),
+    (3, 1, '2026-09-24', 12,  2388.00),
+    (3, 2, '2026-09-24',  4,  3596.00),
+    (3, 1, '2026-09-25',  3,   597.00),
+    (3, 2, '2026-09-25',  1,   899.00),
+    (3, 1, '2026-09-26',  1,   199.00),
+    (3, 2, '2026-09-26',  1,   899.00),
+    (3, 5, '2026-09-26',  5,  1745.00),
+    (3, 1, '2026-09-27', 11,  1751.20),
+    (3, 2, '2026-09-27',  3,  2697.00),
+    (4, 1, '2026-09-21',  2,   398.00),
+    (4, 2, '2026-09-21',  1,   899.00),
+    (4, 3, '2026-09-21',  1,   149.00),
+    (4, 5, '2026-09-21',  6,  2094.00),
+    (4, 1, '2026-09-22',  9,  1791.00),
+    (4, 2, '2026-09-22',  3,  2697.00),
+    (4, 3, '2026-09-22',  1,   149.00),
+    (4, 1, '2026-09-23', 15,  2985.00),
+    (4, 2, '2026-09-23',  3,  2697.00),
+    (4, 3, '2026-09-23',  1,   149.00),
+    (4, 1, '2026-09-24', 12,  2388.00),
+    (4, 2, '2026-09-24',  3,  2697.00),
+    (4, 3, '2026-09-24',  2,   298.00),
+    (4, 1, '2026-09-25',  2,   398.00),
+    (4, 2, '2026-09-25',  1,   899.00),
+    (4, 3, '2026-09-25',  3,   447.00),
+    (4, 5, '2026-09-25',  6,  2094.00),
+    (4, 1, '2026-09-26',  2,   398.00),
+    (4, 2, '2026-09-26',  1,   899.00),
+    (4, 3, '2026-09-26',  2,   298.00),
+    (4, 5, '2026-09-26',  6,  2094.00),
+    (4, 1, '2026-09-27',  5,   796.00),
+    (4, 2, '2026-09-27',  1,   899.00),
+    (4, 3, '2026-09-27',  2,   298.00),
+    (5, 1, '2026-09-21',  1,   199.00),
+    (5, 3, '2026-09-21',  2,   298.00),
+    (5, 5, '2026-09-21',  3,  1047.00),
+    (5, 1, '2026-09-22',  4,   796.00),
+    (5, 3, '2026-09-22',  1,   149.00),
+    (5, 1, '2026-09-23',  9,  1791.00),
+    (5, 2, '2026-09-23',  2,  1798.00),
+    (5, 3, '2026-09-23',  2,   298.00),
+    (5, 1, '2026-09-24',  8,  1592.00),
+    (5, 2, '2026-09-24',  2,  1798.00),
+    (5, 3, '2026-09-24',  3,   447.00),
+    (5, 4, '2026-09-24',  1,   279.00),
+    (5, 1, '2026-09-25',  1,   199.00),
+    (5, 3, '2026-09-25',  4,   596.00),
+    (5, 4, '2026-09-25',  1,   279.00),
+    (5, 5, '2026-09-25',  3,  1047.00),
+    (5, 1, '2026-09-26',  1,   199.00),
+    (5, 3, '2026-09-26',  4,   596.00),
+    (5, 4, '2026-09-26',  1,   279.00),
+    (5, 5, '2026-09-26',  3,  1047.00),
+    (5, 1, '2026-09-27',  3,   477.60),
+    (5, 3, '2026-09-27',  3,   447.00),
+    (5, 4, '2026-09-27',  1,   279.00),
+    (6, 5, '2026-09-21',  2,   698.00),
+    (6, 1, '2026-09-22',  1,   199.00),
+    (6, 1, '2026-09-23',  7,  1393.00),
+    (6, 2, '2026-09-23',  3,  2697.00),
+    (6, 1, '2026-09-24',  9,  1791.00),
+    (6, 2, '2026-09-24',  3,  2697.00),
+    (6, 5, '2026-09-25',  2,   698.00),
+    (6, 5, '2026-09-26',  3,  1047.00),
+    (6, 1, '2026-09-27',  3,   477.60),
+    (7, 1, '2026-09-21',  1,   199.00),
+    (7, 3, '2026-09-21',  4,   596.00),
+    (7, 4, '2026-09-21',  4,  1116.00),
+    (7, 1, '2026-09-22',  2,   398.00),
+    (7, 3, '2026-09-22',  4,   596.00),
+    (7, 4, '2026-09-22',  4,  1116.00),
+    (7, 1, '2026-09-23',  4,   796.00),
+    (7, 2, '2026-09-23',  2,  1798.00),
+    (7, 3, '2026-09-23',  5,   745.00),
+    (7, 4, '2026-09-23',  6,  1674.00),
+    (7, 1, '2026-09-24',  2,   398.00),
+    (7, 2, '2026-09-24',  2,  1798.00),
+    (7, 3, '2026-09-24',  5,   745.00),
+    (7, 4, '2026-09-24',  6,  1674.00),
+    (7, 3, '2026-09-25',  6,   894.00),
+    (7, 4, '2026-09-25',  4,  1116.00),
+    (7, 5, '2026-09-25',  2,   698.00),
+    (7, 3, '2026-09-26',  4,   596.00),
+    (7, 4, '2026-09-26',  4,  1116.00),
+    (7, 5, '2026-09-26',  2,   698.00),
+    (7, 1, '2026-09-27',  2,   318.40),
+    (7, 3, '2026-09-27',  4,   596.00),
+    (7, 4, '2026-09-27',  4,  1116.00);
+`;
+
+const LESSONS = [
+  {
+    level: 1,
+    week: 19,
+    title: "SELECT and FROM",
+    body: [
+      "A table is a set of rows that all have the same named columns. <code>SELECT</code> says which columns you want and <code>FROM</code> says which table they come from. <code>*</code> means every column.",
+      "This database has two tables, <code>cities</code> and <code>observations</code>. Their columns are listed under the results.",
+    ],
+    example: "SELECT *\nFROM cities;",
+    task: "Show every column of every row in the <code>observations</code> table.",
+    hint: "Same shape as the example, different table.",
+    solution: "SELECT *\nFROM observations;",
+  },
+  {
+    level: 1,
+    week: 19,
+    title: "Choosing and computing columns",
+    body: [
+      "Name the columns you need, separated by commas, in the order you want them back. A column can also be an expression.",
+      "<code>AS</code> gives a computed column a name. <code>ROUND(x, 1)</code> hides floating-point noise: <code>16.2 - 9.1</code> is really <code>7.099999999999999</code>.",
+    ],
+    example: "SELECT name,\n       population / 1000.0 AS thousands\nFROM cities;",
+    task: "For every observation, show <code>observed_on</code>, <code>city_id</code>, and the day's temperature range (<code>temp_max_c</code> minus <code>temp_min_c</code>) rounded to one decimal.",
+    hint: "The third column is <code>ROUND(temp_max_c - temp_min_c, 1) AS range_c</code>.",
+    solution: "SELECT observed_on,\n       city_id,\n       ROUND(temp_max_c - temp_min_c, 1) AS range_c\nFROM observations;",
+    source: "Same question as Week 19 · q03_daily_temperature_range.sql",
+  },
+  {
+    level: 1,
+    week: 19,
+    title: "Filtering with WHERE",
+    body: [
+      "<code>WHERE</code> keeps only the rows where its condition is true. Compare with <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code>.",
+      "Text goes in single quotes, like <code>'Norway'</code>. Numbers don't.",
+    ],
+    example: "SELECT name, population\nFROM cities\nWHERE country = 'Norway';",
+    task: "Find every observation with more than 5 mm of precipitation. Show all columns.",
+    hint: "<code>WHERE precipitation_mm &gt; 5</code>",
+    solution: "SELECT *\nFROM observations\nWHERE precipitation_mm > 5;",
+    source: "Same question as Week 19 · q04_wet_days.sql",
+  },
+  {
+    level: 1,
+    week: 19,
+    title: "AND, OR, IN and BETWEEN",
+    body: [
+      "<code>AND</code> needs both conditions to hold; <code>OR</code> needs either. <code>AND</code> binds tighter than <code>OR</code>, so add parentheses when you mix them.",
+      "<code>IN ('a', 'b')</code> is shorthand for several ORs on one column. <code>BETWEEN x AND y</code> includes both ends. Dates are stored as <code>'YYYY-MM-DD'</code> text, which sorts and compares correctly.",
+    ],
+    example: "SELECT observed_on, city_id, temp_max_c\nFROM observations\nWHERE conditions = 'sun'\n  AND temp_max_c >= 15;",
+    task: "Find the days with frost (<code>temp_min_c</code> below 0) or wind above 10 m/s. Show <code>observed_on</code>, <code>city_id</code>, <code>temp_min_c</code> and <code>wind_ms</code>.",
+    hint: "<code>WHERE temp_min_c &lt; 0 OR wind_ms &gt; 10</code>",
+    solution: "SELECT observed_on, city_id, temp_min_c, wind_ms\nFROM observations\nWHERE temp_min_c < 0\n   OR wind_ms > 10;",
+    source: "Same question as Week 19 · q06_frost_or_strong_wind.sql",
+  },
+  {
+    level: 1,
+    week: 19,
+    title: "NULL, the missing value",
+    body: [
+      "Two wind readings are <code>NULL</code> because a sensor failed. NULL means unknown, so any comparison with it is unknown too, even <code>wind_ms = NULL</code>.",
+      "<code>WHERE</code> drops every row whose condition isn't true, so that comparison matches nothing. Run the example: it returns no rows although two exist. Use <code>IS NULL</code> or <code>IS NOT NULL</code> instead.",
+    ],
+    example: "SELECT id, observed_on, wind_ms\nFROM observations\nWHERE wind_ms = NULL;",
+    task: "Find the observations with a missing wind reading. Show <code>id</code>, <code>city_id</code> and <code>observed_on</code>.",
+    hint: "<code>WHERE wind_ms IS NULL</code>",
+    solution: "SELECT id, city_id, observed_on\nFROM observations\nWHERE wind_ms IS NULL;",
+    source: "Same question as Week 19 · q07_missing_wind_readings.sql",
+  },
+  {
+    level: 1,
+    week: 19,
+    title: "ORDER BY and LIMIT",
+    body: [
+      "Without <code>ORDER BY</code>, the order rows come back in isn't part of the answer. <code>ORDER BY col</code> sorts ascending, <code>DESC</code> sorts descending, and extra columns break ties.",
+      "<code>LIMIT n</code> keeps the first n rows of the sorted result, so <code>ORDER BY</code> plus <code>LIMIT</code> gives a top-n list.",
+    ],
+    example: "SELECT name, population\nFROM cities\nORDER BY population DESC\nLIMIT 3;",
+    task: "Show the three highest daily highs of the week, warmest first: <code>observed_on</code>, <code>city_id</code> and <code>temp_max_c</code>.",
+    hint: "<code>ORDER BY temp_max_c DESC LIMIT 3</code>",
+    solution: "SELECT observed_on, city_id, temp_max_c\nFROM observations\nORDER BY temp_max_c DESC\nLIMIT 3;",
+    source: "Same question as Week 19 · q10_three_warmest_days.sql",
+    ordered: true,
+  },
+  {
+    level: 1,
+    week: 20,
+    title: "Aggregates",
+    body: [
+      "<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code> and <code>MAX</code> turn many rows into one value. With no <code>GROUP BY</code>, the result is always one row.",
+      "<code>COUNT(*)</code> counts rows. <code>COUNT(column)</code> counts the values that aren't NULL. <code>SUM</code>, <code>AVG</code>, <code>MIN</code> and <code>MAX</code> skip NULLs too.",
+    ],
+    example: "SELECT MIN(temp_min_c)           AS coldest_low_c,\n       MAX(temp_max_c)           AS warmest_high_c,\n       ROUND(AVG(temp_max_c), 1) AS average_high_c\nFROM observations;",
+    task: "In one row, show the number of observations and the number of wind readings, in that order.",
+    hint: "One is <code>COUNT(*)</code>, the other is <code>COUNT(wind_ms)</code>. The answer is 49 and 47.",
+    solution: "SELECT COUNT(*)       AS observations,\n       COUNT(wind_ms) AS wind_readings\nFROM observations;",
+    source: "Same question as Week 20 · q01_count_observations.sql",
+  },
+  {
+    level: 1,
+    week: 20,
+    title: "GROUP BY",
+    body: [
+      "<code>GROUP BY</code> sorts rows into groups, one per distinct value, and computes each aggregate once per group. You get one result row per group.",
+      "Every column in <code>SELECT</code> must either be in <code>GROUP BY</code> or be inside an aggregate. SQLite doesn't enforce this, so it's on you.",
+    ],
+    example: "SELECT conditions,\n       COUNT(*) AS days\nFROM observations\nGROUP BY conditions\nORDER BY days DESC;",
+    task: "Show each <code>city_id</code> with its total precipitation rounded to one decimal, wettest first.",
+    hint: "<code>ROUND(SUM(precipitation_mm), 1) AS total_mm</code>, grouped by <code>city_id</code> and sorted by <code>total_mm DESC</code>.",
+    solution: "SELECT city_id,\n       ROUND(SUM(precipitation_mm), 1) AS total_mm\nFROM observations\nGROUP BY city_id\nORDER BY total_mm DESC;",
+    source: "Same question as Week 20 · q05_precipitation_per_city.sql",
+    ordered: true,
+  },
+  {
+    level: 1,
+    week: 20,
+    title: "HAVING",
+    body: [
+      "<code>WHERE</code> filters rows before they're grouped, so it can't use an aggregate. <code>HAVING</code> filters whole groups afterwards, so it can.",
+      "They're often used together: <code>WHERE</code> decides which rows count, <code>HAVING</code> decides which groups to keep.",
+    ],
+    example: "SELECT city_id,\n       ROUND(SUM(precipitation_mm), 1) AS total_mm\nFROM observations\nGROUP BY city_id\nHAVING SUM(precipitation_mm) > 20;",
+    task: "Which <code>city_id</code>s had at least three rainy days (<code>conditions = 'rain'</code>), and how many? Order by <code>city_id</code>.",
+    hint: "<code>WHERE conditions = 'rain'</code> before grouping, <code>HAVING COUNT(*) &gt;= 3</code> after.",
+    solution: "SELECT city_id,\n       COUNT(*) AS rainy_days\nFROM observations\nWHERE conditions = 'rain'\nGROUP BY city_id\nHAVING COUNT(*) >= 3\nORDER BY city_id;",
+    source: "Same question as Week 20 · q07_cities_with_three_rainy_days.sql",
+    ordered: true,
+  },
+  {
+    level: 2,
+    week: 21,
+    title: "JOIN",
+    body: [
+      "<code>observations</code> stores a <code>city_id</code>, not the city's name. Each fact lives in one table, and keys connect the tables.",
+      "<code>JOIN … ON</code> pairs up rows where the condition holds. Short aliases like <code>o</code> and <code>c</code> keep it readable, and <code>c.name</code> says which table a column comes from.",
+    ],
+    example: "SELECT c.name, o.observed_on, o.temp_max_c\nFROM observations AS o\nJOIN cities AS c ON c.id = o.city_id\nORDER BY c.name, o.observed_on\nLIMIT 10;",
+    task: "Where and when did it snow? Show the city's <code>name</code>, <code>observed_on</code>, <code>temp_max_c</code> and <code>temp_min_c</code>.",
+    hint: "Join like the example, then add <code>WHERE o.conditions = 'snow'</code>.",
+    solution: "SELECT c.name, o.observed_on, o.temp_max_c, o.temp_min_c\nFROM observations AS o\nJOIN cities AS c ON c.id = o.city_id\nWHERE o.conditions = 'snow';",
+    source: "Same question as Week 21 · q02_snow_days.sql",
+  },
+  {
+    level: 2,
+    week: 21,
+    title: "LEFT JOIN",
+    body: [
+      "A plain <code>JOIN</code> drops rows that have no match, so Copenhagen, which has no observations, disappears.",
+      "<code>LEFT JOIN</code> keeps every row of the left table and fills the right side with NULL. Count matches with <code>COUNT(o.id)</code>: <code>COUNT(*)</code> would count Copenhagen's NULL-padded row as 1.",
+    ],
+    example: "SELECT c.name, o.id\nFROM cities AS c\nLEFT JOIN observations AS o ON o.city_id = c.id\nWHERE o.id IS NULL;",
+    task: "Show every city's <code>name</code> and its number of observations, including cities with none.",
+    hint: "<code>FROM cities AS c LEFT JOIN observations AS o …</code>, then <code>GROUP BY c.id, c.name</code> and <code>COUNT(o.id)</code>.",
+    solution: "SELECT c.name,\n       COUNT(o.id) AS observations\nFROM cities AS c\nLEFT JOIN observations AS o ON o.city_id = c.id\nGROUP BY c.id, c.name;",
+    source: "Same question as Week 21 · q06_observation_count_per_city.sql",
+  },
+  {
+    level: 2,
+    week: 22,
+    title: "Changing data",
+    body: [
+      "<code>INSERT</code> adds rows, <code>UPDATE</code> changes them and <code>DELETE</code> removes them. Always list the columns in an <code>INSERT</code>.",
+      "<code>UPDATE</code> or <code>DELETE</code> without <code>WHERE</code> changes every row in the table. Here that's harmless: Reset database puts the original data back.",
+    ],
+    example: "UPDATE cities\nSET population = population + 100\nWHERE name = 'Kiruna';\n\nSELECT * FROM cities WHERE name = 'Kiruna';",
+    task: "Copenhagen (<code>city_id</code> 8) has no observations. Insert one for 2026-09-28: high 14.0, low 9.0, 2.5 mm precipitation, wind 6.0 m/s, conditions <code>'cloud'</code>.",
+    hint: "<code>INSERT INTO observations (city_id, observed_on, temp_max_c, temp_min_c, precipitation_mm, wind_ms, conditions) VALUES (…);</code>",
+    solution: "INSERT INTO observations\n    (city_id, observed_on, temp_max_c, temp_min_c, precipitation_mm, wind_ms, conditions)\nVALUES (8, '2026-09-28', 14.0, 9.0, 2.5, 6.0, 'cloud');",
+    source: "Week 22's store.record() does the same insert from Python",
+    verify: "SELECT COUNT(*) FROM observations WHERE city_id = 8 AND observed_on = '2026-09-28' AND temp_max_c = 14 AND temp_min_c = 9 AND precipitation_mm = 2.5 AND wind_ms = 6 AND conditions = 'cloud'",
+  },
+  {
+    level: 3,
+    week: 23,
+    title: "WITH: one step at a time",
+    body: [
+      "Level 3 adds a shop that sells weather gear: <code>products</code>, <code>stores</code> and <code>daily_sales</code>. Store ids aren't city ids, so go through <code>stores.city_id</code> to reach a city's name.",
+      "A common table expression, <code>WITH name AS (…)</code>, gives an intermediate result a name. The query then reads top to bottom as steps, and the final <code>SELECT</code> uses each step like a table.",
+    ],
+    example: "WITH daily AS (\n    SELECT sold_on, SUM(units) AS units\n    FROM daily_sales\n    GROUP BY sold_on\n)\nSELECT *\nFROM daily\nORDER BY units DESC;",
+    task: "Show each store's city name, total units, and total revenue rounded to two decimals, highest revenue first. Build the per-store totals in a CTE, then join it to <code>stores</code> and <code>cities</code>.",
+    hint: "<code>WITH store_totals AS (SELECT store_id, SUM(units) AS units, SUM(revenue_sek) AS revenue_sek FROM daily_sales GROUP BY store_id)</code>, then join on <code>s.id = t.store_id</code> and <code>c.id = s.city_id</code>.",
+    solution: "WITH store_totals AS (\n    SELECT store_id,\n           SUM(units)       AS units,\n           SUM(revenue_sek) AS revenue_sek\n    FROM daily_sales\n    GROUP BY store_id\n)\nSELECT c.name AS city,\n       t.units,\n       ROUND(t.revenue_sek, 2) AS revenue_sek\nFROM store_totals AS t\nJOIN stores AS s ON s.id = t.store_id\nJOIN cities AS c ON c.id = s.city_id\nORDER BY t.revenue_sek DESC;",
+    source: "Same question as Week 23 · q01_revenue_per_store.sql",
+    ordered: true,
+  },
+  {
+    level: 3,
+    week: 23,
+    title: "Window functions: ranking",
+    body: [
+      "A window function computes across rows without collapsing them. <code>OVER (PARTITION BY x ORDER BY y)</code> says which rows it looks at (those with the same x) and in what order.",
+      "<code>ROW_NUMBER()</code> numbers the rows 1, 2, 3 within each partition. To get the top item per group, number the rows in a CTE and keep row 1 in the outer query: a window function can't go in <code>WHERE</code>.",
+    ],
+    example: "SELECT store_id,\n       product_id,\n       SUM(revenue_sek) AS revenue_sek,\n       RANK() OVER (PARTITION BY store_id\n                    ORDER BY SUM(revenue_sek) DESC) AS place\nFROM daily_sales\nGROUP BY store_id, product_id\nORDER BY store_id, place;",
+    task: "Find each store's best-selling product by revenue. Show the city name, the product name, and its revenue rounded to two decimals.",
+    hint: "Total per <code>store_id, product_id</code> in one CTE; add <code>ROW_NUMBER() OVER (PARTITION BY store_id ORDER BY revenue_sek DESC) AS position</code> in a second; keep <code>WHERE position = 1</code>.",
+    solution: "WITH product_totals AS (\n    SELECT store_id, product_id, SUM(revenue_sek) AS revenue_sek\n    FROM daily_sales\n    GROUP BY store_id, product_id\n),\nranked AS (\n    SELECT store_id, product_id, revenue_sek,\n           ROW_NUMBER() OVER (PARTITION BY store_id ORDER BY revenue_sek DESC) AS position\n    FROM product_totals\n)\nSELECT c.name AS city,\n       p.name AS product,\n       ROUND(r.revenue_sek, 2) AS revenue_sek\nFROM ranked AS r\nJOIN stores AS s ON s.id = r.store_id\nJOIN cities AS c ON c.id = s.city_id\nJOIN products AS p ON p.id = r.product_id\nWHERE r.position = 1;",
+    source: "Same question as Week 23 · q03_best_product_per_store.sql",
+  },
+  {
+    level: 3,
+    week: 23,
+    title: "Running totals and LAG",
+    body: [
+      "With <code>ORDER BY</code> inside <code>OVER</code>, <code>SUM(x) OVER (ORDER BY day)</code> adds up every row so far: a running total.",
+      "<code>LAG(x) OVER (ORDER BY day)</code> reads the previous row's value, so you can compare each day with the one before. On the first row there is no previous row, and <code>LAG</code> gives NULL.",
+    ],
+    example: "SELECT observed_on,\n       temp_max_c,\n       ROUND(temp_max_c - LAG(temp_max_c) OVER (ORDER BY observed_on), 1) AS change_c\nFROM observations\nWHERE city_id = 5;",
+    task: "For the Stockholm store (<code>store_id</code> 1), show each day's revenue and the running total for the week so far, both rounded to two decimals, in date order.",
+    hint: "A CTE with <code>SUM(revenue_sek)</code> per <code>sold_on</code> for <code>store_id = 1</code>, then <code>SUM(revenue_sek) OVER (ORDER BY sold_on)</code>.",
+    solution: "WITH daily AS (\n    SELECT sold_on, SUM(revenue_sek) AS revenue_sek\n    FROM daily_sales\n    WHERE store_id = 1\n    GROUP BY sold_on\n)\nSELECT sold_on,\n       ROUND(revenue_sek, 2) AS revenue_sek,\n       ROUND(SUM(revenue_sek) OVER (ORDER BY sold_on), 2) AS week_to_date_sek\nFROM daily\nORDER BY sold_on;",
+    source: "Same question as Week 23 · q04_running_revenue.sql",
+    ordered: true,
+  },
+  {
+    level: 3,
+    week: 24,
+    title: "Business rules with triggers",
+    body: [
+      "A trigger is SQL the database runs by itself when rows change. A <code>BEFORE INSERT</code> trigger can refuse a row with <code>RAISE(ABORT, 'message')</code>, and the rule then holds for every program that writes to the table.",
+      "<code>NEW</code> is the row being inserted, and <code>WHEN</code> limits which rows the trigger fires for. Run the example, then try inserting a snowy day for Malmö (<code>city_id</code> 3) to see it refused.",
+    ],
+    example: "DROP TRIGGER IF EXISTS no_snow_in_malmo;\n\nCREATE TRIGGER no_snow_in_malmo\nBEFORE INSERT ON observations\nWHEN NEW.city_id = 3 AND NEW.conditions = 'snow'\nBEGIN\n    SELECT RAISE(ABORT, 'no snow in Malmö this week');\nEND;\n\nSELECT name, tbl_name FROM sqlite_master WHERE type = 'trigger';",
+    task: "Create a trigger that refuses any new observation with negative <code>precipitation_mm</code>, with the message <code>'precipitation cannot be negative'</code>. Check answer tests it with a bad row and a good row, then undoes both.",
+    hint: "<code>CREATE TRIGGER no_negative_precipitation BEFORE INSERT ON observations WHEN NEW.precipitation_mm &lt; 0 BEGIN SELECT RAISE(ABORT, '…'); END;</code>",
+    solution: "DROP TRIGGER IF EXISTS no_negative_precipitation;\n\nCREATE TRIGGER no_negative_precipitation\nBEFORE INSERT ON observations\nWHEN NEW.precipitation_mm < 0\nBEGIN\n    SELECT RAISE(ABORT, 'precipitation cannot be negative');\nEND;",
+    source: "Week 24's schema.sql uses the same pattern to protect stock",
+    probe: probeNegativePrecipitationTrigger,
+  },
+];
+
+const LEVEL_NAMES = { 1: "Beginner", 2: "Intermediate", 3: "Advanced" };
+
+// Tries an INSERT inside a savepoint and undoes it, returning the error message or null.
+function tryInsertAndUndo(sql) {
+  db.run("SAVEPOINT probe");
+  try {
+    db.run(sql);
+    return null;
+  } catch (error) {
+    return String(error.message || error);
+  } finally {
+    db.run("ROLLBACK TO probe");
+    db.run("RELEASE probe");
+  }
+}
+
+function probeNegativePrecipitationTrigger() {
+  const insert = (mm) => `INSERT INTO observations (city_id, observed_on, temp_max_c, temp_min_c, precipitation_mm, wind_ms, conditions) VALUES (1, '2026-10-01', 10, 5, ${mm}, 3, 'rain')`;
+  const refusal = tryInsertAndUndo(insert(-1));
+  if (refusal === null) return "A row with -1 mm was still accepted. The trigger should be <code>BEFORE INSERT ON observations</code> with <code>WHEN NEW.precipitation_mm &lt; 0</code>.";
+  const normal = tryInsertAndUndo(insert(0.5));
+  if (normal !== null) return `A normal row with 0.5 mm was refused too (${escapeHtml(normal)}). Check the WHEN condition.`;
+  if (!refusal.includes("precipitation cannot be negative")) return `Negative rows are refused, but with the message "${escapeHtml(refusal)}". Use <code>RAISE(ABORT, 'precipitation cannot be negative')</code>.`;
+  return null;
+}
+
+const STORAGE_KEY = "sql-weather-lab-v2";
+const MAX_ROWS_SHOWN = 200;
+const ENGINE_SOURCES = [
+  "https://cdn.jsdelivr.net/npm/sql.js@1.14.1/dist/sql-asm.js",
+  "https://unpkg.com/sql.js@1.14.1/dist/sql-asm.js",
+];
+const KEYWORDS = "SELECT|FROM|WHERE|AND|OR|NOT|IN|IS|NULL|BETWEEN|LIKE|ORDER|BY|GROUP|HAVING|LIMIT|AS|DISTINCT|JOIN|LEFT|INNER|ON|INSERT|INTO|VALUES|UPDATE|SET|DELETE|DESC|ASC|COUNT|SUM|AVG|MIN|MAX|ROUND|CASE|WHEN|THEN|ELSE|END";
+const TOKEN_RE = new RegExp(`('(?:[^']|'')*')|(--[^\\n]*)|\\b(\\d+(?:\\.\\d+)?)\\b|\\b(${KEYWORDS})\\b`, "gi");
+
+const state = { lesson: 0, solved: new Set() };
+let engine = null;
+let db = null;
+
+const $ = (id) => document.getElementById(id);
+const editor = $("sql-editor");
+
+function escapeHtml(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function highlight(sql) {
+  return escapeHtml(sql).replace(TOKEN_RE, (match, str, comment, num, kw) => {
+    if (str) return `<span class="tok-str">${str}</span>`;
+    if (comment) return `<span class="tok-com">${comment}</span>`;
+    if (num) return `<span class="tok-num">${num}</span>`;
+    return `<span class="tok-kw">${kw}</span>`;
+  });
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (saved) {
+      state.lesson = Math.min(Math.max(saved.lesson | 0, 0), LESSONS.length - 1);
+      state.solved = new Set((saved.solved || []).filter((i) => i >= 0 && i < LESSONS.length));
+    }
+  } catch (_) { /* storage unavailable: start fresh */ }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ lesson: state.lesson, solved: [...state.solved] }));
+  } catch (_) { /* storage unavailable: progress lasts for this visit only */ }
+}
+
+function renderNav() {
+  const groups = new Map();
+  LESSONS.forEach((lesson, index) => {
+    if (!groups.has(lesson.level)) groups.set(lesson.level, []);
+    groups.get(lesson.level).push(index);
+  });
+  const nav = $("lesson-nav");
+  nav.innerHTML = "";
+  for (const [level, indices] of groups) {
+    const group = document.createElement("div");
+    group.className = "nav-group";
+    group.innerHTML = `<span class="eyebrow">Level ${level} · ${LEVEL_NAMES[level]}</span>`;
+    const buttons = document.createElement("div");
+    buttons.className = "nav-buttons";
+    for (const index of indices) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "nav-btn" + (state.solved.has(index) ? " solved" : "");
+      button.textContent = String(index + 1);
+      const status = state.solved.has(index) ? ", solved" : "";
+      button.setAttribute("aria-label", `Lesson ${index + 1}: ${LESSONS[index].title}${status}`);
+      if (index === state.lesson) button.setAttribute("aria-current", "step");
+      button.addEventListener("click", () => showLesson(index, true));
+      buttons.appendChild(button);
+    }
+    group.appendChild(buttons);
+    nav.appendChild(group);
+  }
+  $("solved-count").textContent = String(state.solved.size);
+  $("lesson-total").textContent = String(LESSONS.length);
+  $("progress-fill").style.width = `${(100 * state.solved.size) / LESSONS.length}%`;
+}
+
+function showLesson(index, runExample) {
+  state.lesson = index;
+  saveState();
+  const lesson = LESSONS[index];
+  $("lesson-week").textContent = `Lesson ${index + 1} of ${LESSONS.length} · Level ${lesson.level} · Week ${lesson.week}`;
+  $("lesson-title").textContent = lesson.title;
+  $("lesson-body").innerHTML = lesson.body.map((p) => `<p>${p}</p>`).join("");
+  $("lesson-example").innerHTML = highlight(lesson.example);
+  $("task-text").innerHTML = lesson.task;
+  $("task-source").textContent = lesson.source || "";
+  $("task-source").hidden = !lesson.source;
+  $("hint").hidden = true;
+  $("hint").innerHTML = "";
+  $("prev-lesson").disabled = index === 0;
+  $("next-lesson").disabled = index === LESSONS.length - 1;
+  $("feedback").innerHTML = "";
+  editor.value = lesson.example;
+  renderNav();
+  if (runExample && db) runEditor();
+}
+
+function runSql(sql) {
+  const sets = [];
+  let changed = 0;
+  for (const statement of db.iterateStatements(sql)) {
+    const columns = statement.getColumnNames();
+    const rows = [];
+    while (statement.step()) rows.push(statement.get());
+    if (columns.length) sets.push({ columns, rows });
+    else changed += db.getRowsModified();
+  }
+  return { sets, changed };
+}
+
+function renderTable(set) {
+  if (!set.rows.length) {
+    return `<div class="table-wrap"><table><thead><tr>${set.columns.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead></table><div class="empty">No rows matched.</div></div>`;
+  }
+  const head = set.columns.map((c) => `<th scope="col">${escapeHtml(c)}</th>`).join("");
+  const body = set.rows.slice(0, MAX_ROWS_SHOWN).map((row) => {
+    const cells = row.map((value) => {
+      if (value === null) return `<td class="null">NULL</td>`;
+      if (typeof value === "number") return `<td class="num">${value}</td>`;
+      return `<td>${escapeHtml(String(value))}</td>`;
+    });
+    return `<tr>${cells.join("")}</tr>`;
+  }).join("");
+  return `<div class="table-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function setStatus(text, isError) {
+  const status = $("status");
+  status.textContent = text;
+  status.classList.toggle("error", Boolean(isError));
+}
+
+function plural(n, word) {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
+}
+
+function showResult(result, elapsedMs) {
+  const last = result.sets[result.sets.length - 1];
+  const timing = `${elapsedMs < 1 ? "<1" : Math.round(elapsedMs)} ms`;
+  if (last) {
+    const shown = last.rows.length > MAX_ROWS_SHOWN ? ` (showing ${MAX_ROWS_SHOWN})` : "";
+    setStatus(`${plural(last.rows.length, "row")}${shown} · ${timing}`);
+    $("result").innerHTML = renderTable(last);
+  } else {
+    setStatus(`Done · ${plural(result.changed, "row")} changed · ${timing}`);
+    $("result").innerHTML = `<div class="table-wrap"><div class="empty">The statement ran. ${plural(result.changed, "row")} changed. Add a SELECT to see the data.</div></div>`;
+  }
+}
+
+function showError(error) {
+  setStatus("Error", true);
+  $("result").innerHTML = `<div class="feedback bad"><p><strong>SQLite says:</strong></p><p class="mono">${escapeHtml(String(error.message || error))}</p></div>`;
+}
+
+function runEditor() {
+  if (!db) return null;
+  $("feedback").innerHTML = "";
+  const started = performance.now();
+  try {
+    const result = runSql(editor.value);
+    showResult(result, performance.now() - started);
+    return result;
+  } catch (error) {
+    showError(error);
+    return null;
+  }
+}
+
+function sameValue(a, b) {
+  if (typeof a === "number" && typeof b === "number") return Math.abs(a - b) < 0.051;
+  return a === b;
+}
+
+function sameRow(a, b) {
+  return a.length === b.length && a.every((value, i) => sameValue(value, b[i]));
+}
+
+function sortKey(row) {
+  return row.map((v) => (v === null ? "\u0000" : typeof v === "number" ? v.toFixed(1).padStart(12, "0") : String(v))).join("\u0001");
+}
+
+function sortedRows(rows) {
+  return [...rows].sort((a, b) => (sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0));
+}
+
+function formatRow(row) {
+  return "(" + row.map((v) => (v === null ? "NULL" : typeof v === "string" ? `'${v}'` : String(v))).join(", ") + ")";
+}
+
+function compare(expected, got, ordered) {
+  if (got.columns.length !== expected.columns.length) {
+    return `Expected ${plural(expected.columns.length, "column")} (${expected.columns.join(", ")}), but your result has ${got.columns.length}.`;
+  }
+  if (got.rows.length !== expected.rows.length) {
+    return `Expected ${plural(expected.rows.length, "row")}, but your result has ${got.rows.length}. Check your WHERE, GROUP BY or LIMIT.`;
+  }
+  if (ordered && got.rows.every((row, i) => sameRow(row, expected.rows[i]))) return null;
+  const want = sortedRows(expected.rows);
+  const have = sortedRows(got.rows);
+  const mismatch = want.findIndex((row, i) => !sameRow(row, have[i]));
+  if (mismatch === -1) return ordered ? "The right rows, in the wrong order. Check your ORDER BY." : null;
+  return `The row count is right, but some values differ. For example, expected <code>${escapeHtml(formatRow(want[mismatch]))}</code> but found <code>${escapeHtml(formatRow(have[mismatch]))}</code>. Check the column order and any rounding.`;
+}
+
+function showFeedback(ok, message) {
+  const next = ok && state.lesson < LESSONS.length - 1
+    ? `<div class="row"><button class="btn btn-primary" type="button" id="feedback-next">Next lesson →</button></div>`
+    : "";
+  $("feedback").innerHTML = `<div class="feedback ${ok ? "good" : "bad"}"><strong>${ok ? "Correct" : "Not yet"}</strong><p>${message}</p>${next}</div>`;
+  const button = $("feedback-next");
+  if (button) button.addEventListener("click", () => showLesson(state.lesson + 1, true));
+}
+
+function checkAnswer() {
+  if (!db) return;
+  const lesson = LESSONS[state.lesson];
+  const result = runEditor();
+  const sqlError = "Your SQL has an error (shown below). Fix it and check again.";
+  // A probe tests how the database behaves, so it can pass even when re-running
+  // the SQL failed, e.g. with "trigger already exists" after an earlier run.
+  if (!result && !lesson.probe) {
+    showFeedback(false, sqlError);
+    return;
+  }
+  let problem = null;
+  if (lesson.probe) {
+    problem = lesson.probe();
+    if (problem && !result) problem = sqlError;
+  } else if (lesson.verify) {
+    const count = runSql(lesson.verify).sets[0].rows[0][0];
+    if (count < 1) problem = "The new observation isn't in the table yet, or one of its values differs from the task.";
+  } else {
+    const got = result.sets[result.sets.length - 1];
+    if (!got) {
+      problem = "Your SQL didn't return any rows to compare. This task needs a SELECT.";
+    } else {
+      const expected = runSql(lesson.solution).sets[0];
+      problem = compare(expected, got, lesson.ordered);
+    }
+  }
+  if (problem) {
+    showFeedback(false, problem);
+    return;
+  }
+  state.solved.add(state.lesson);
+  saveState();
+  renderNav();
+  const remaining = LESSONS.length - state.solved.size;
+  const message = remaining === 0
+    ? `That's all ${LESSONS.length}. Next, try the Try It Yourself exercises in each week's README: they have no solutions, so they're real practice.`
+    : `Lesson ${state.lesson + 1} solved. ${plural(remaining, "lesson")} to go.`;
+  showFeedback(true, message);
+}
+
+function resetDatabase() {
+  if (db) db.close();
+  db = new engine.Database();
+  db.run(SEED_SQL);
+}
+
+function wireEvents() {
+  $("run-sql").addEventListener("click", runEditor);
+  $("check-answer").addEventListener("click", checkAnswer);
+  $("check-answer-2").addEventListener("click", checkAnswer);
+  $("reset-db").addEventListener("click", () => {
+    resetDatabase();
+    $("feedback").innerHTML = "";
+    setStatus("Database reset to the original data");
+    $("result").innerHTML = `<div class="table-wrap"><div class="empty">All tables are back to their original 8 cities and 49 observations.</div></div>`;
+  });
+  $("load-example").addEventListener("click", () => {
+    editor.value = LESSONS[state.lesson].example;
+    runEditor();
+  });
+  $("show-hint").addEventListener("click", () => {
+    $("hint").innerHTML = `<strong>Hint:</strong> ${LESSONS[state.lesson].hint}`;
+    $("hint").hidden = false;
+  });
+  $("show-solution").addEventListener("click", () => {
+    editor.value = LESSONS[state.lesson].solution;
+    editor.focus();
+    $("hint").innerHTML = "The solution is in the editor. Run it, then try changing it.";
+    $("hint").hidden = false;
+  });
+  $("prev-lesson").addEventListener("click", () => showLesson(state.lesson - 1, true));
+  $("next-lesson").addEventListener("click", () => showLesson(state.lesson + 1, true));
+  editor.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      runEditor();
+    } else if (event.key === "Tab" && !event.shiftKey) {
+      event.preventDefault();
+      const { selectionStart: start, selectionEnd: end } = editor;
+      editor.setRangeText("  ", start, end, "end");
+    }
+  });
+}
+
+function loadEngineScript(index = 0) {
+  return new Promise((resolve, reject) => {
+    if (index >= ENGINE_SOURCES.length) {
+      reject(new Error("no source reachable"));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = ENGINE_SOURCES[index];
+    script.onload = resolve;
+    script.onerror = () => {
+      script.remove();
+      loadEngineScript(index + 1).then(resolve, reject);
+    };
+    document.head.appendChild(script);
+  });
+}
+
+async function start() {
+  loadState();
+  wireEvents();
+  showLesson(state.lesson, false);
+  try {
+    await loadEngineScript();
+    engine = await window.initSqlJs();
+    resetDatabase();
+  } catch (error) {
+    setStatus("SQLite didn't load", true);
+    $("result").innerHTML = `<div class="feedback bad"><p><strong>The SQL engine couldn't be downloaded.</strong></p><p>This page fetches SQLite (sql.js) from a CDN the first time it runs, so it needs an internet connection. Check your connection and reload. Meanwhile, the same exercises run offline with Python: see the Week 19 README.</p></div>`;
+    return;
+  }
+  for (const id of ["run-sql", "check-answer", "reset-db"]) $(id).disabled = false;
+  runEditor();
+}
+
+start();
+</script>
+</body>
+</html>

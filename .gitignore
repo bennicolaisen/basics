@@ -8,6 +8,9 @@ __pycache__/
 .venv/
 venv/
 
+# SQLite databases created while running the Month 5-6 weeks
+*.db
+
 # IntelliJ - keep only the shared, hand-authored Run Configurations;
 # everything else under .idea/ is machine-specific and IDE-generated.
 .idea/*

@@ -18,8 +18,9 @@
    read *its* `README.md` — that's lesson one.
 
 5. **Run a week's tests to check it works:**
-   - **Python weeks (1–9):** open a terminal in that week's folder and run
-     `python -m pytest -q` (first time only: `pip install pytest`).
+   - **Python weeks (1–9 and 19–26):** open a terminal in that week's
+     folder and run `python -m pytest -q` (first time only:
+     `pip install pytest`).
    - **Java weeks (10–17):** pick `Week NN - Run Tests` from the Run
      Configuration dropdown at the top of IntelliJ and click ▶.
 
