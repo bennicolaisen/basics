@@ -26,8 +26,8 @@ through folders and typing Maven commands.
 
    Pick one, hit ▶. Output shows in the Run tool window at the bottom.
 
-4. **Python weeks (1–9)** aren't part of the Maven project — they're
-   plain Python and don't need to be. Two ways to work with them in
+4. **Python weeks (1–9 and 19–26)** aren't part of the Maven project —
+   they're plain Python and don't need to be. Two ways to work with them in
    IntelliJ:
    - **With the Python plugin** (bundled in IntelliJ Ultimate; installable
      for free in IntelliJ Community via `Settings > Plugins > Marketplace

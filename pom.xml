@@ -15,8 +15,8 @@
         Opening this pom.xml in IntelliJ ("Open" -&gt; select the repository
         root) imports all eight modules at once, so every week's code, tests,
         and Run Configurations are available from a single project window.
-        Python weeks (1-9) live alongside these modules but are not part of
-        the Maven reactor - see INTELLIJ_SETUP.md for how to run them.
+        Python weeks (1-9, 19-26) live alongside these modules but are not
+        part of the Maven reactor - see INTELLIJ_SETUP.md for how to run them.
     </description>
 
     <!--

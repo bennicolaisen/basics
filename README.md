@@ -11,6 +11,19 @@ It assumes you've *seen* programming before (you're in a CS program, after
 all) but re-teaches it from the ground up rather than assuming any of it is
 solid. Nothing here is skipped as "too basic to cover."
 
+The course runs for six months, one project per week:
+
+| Months | Weeks | Part |
+|---|---|---|
+| 1–4 | 1–18 | Programming fundamentals: Python, data structures, OOP, Java, testing, debugging, Git, and a capstone |
+| 5 | 19–24 | Databases and SQL, in three levels: beginner, intermediate, advanced |
+| 6 | 25–26 | Web APIs: calling one, then building one on top of your own database |
+
+The two halves use the same project format and build on each other: the
+SQL weeks are written in the Python you rebuilt in Months 1–3, use the
+testing habits from Month 4, and end with the database and API layers
+that most real applications are made of.
+
 **New here?** Start with [`GETTING_STARTED.md`](GETTING_STARTED.md) — clone,
 open, run your first week's tests, in five steps.
 
@@ -54,8 +67,11 @@ repo.
 
 ## Prerequisites
 
-- **Python 3.10+** (Months 1–2, plus Week 9) — no third-party packages;
-  everything uses the standard library and `pytest` for tests.
+- **Python 3.10+** (Months 1–2, Week 9, and Months 5–6) — no third-party
+  packages; everything uses the standard library and `pytest` for tests.
+  That includes the databases and web servers in Months 5–6: SQLite ships
+  with Python as the `sqlite3` module, and `http.server`/`urllib` cover
+  HTTP.
 - **Java 17** and **Maven** (Month 3 onward) — same toolchain as
   `Laboration_1`, so nothing new to install when you get there.
 - A terminal and a text editor or IDE you're comfortable in. An IDE with a
@@ -63,11 +79,17 @@ repo.
 
 ## Pacing
 
-Eighteen weeks, written as one project per week. That's a plan, not a
+Twenty-six weeks, written as one project per week. That's a plan, not a
 contract — go slower on weeks that expose a real gap, and faster on ones
-that turn out to just be rust. If you only have four months and need to
-compress, the four **capstone-adjacent** weeks (4, 8, 12, 17) are the ones
-least safe to skip — they're where the month's pieces get put together.
+that turn out to just be rust. If you need to compress, the
+**capstone-adjacent** weeks (4, 8, 12, 17, 24, 26) are the ones least safe
+to skip — they're where each month's pieces get put together.
+
+Week 18 is a natural checkpoint (see "Where this leads"). The SQL weeks
+are split into three levels of two weeks each (Weeks 19–20, 21–22,
+23–24), so if time runs short you can stop after any level with a
+complete, usable skill set, and still do Month 6's API weeks, which only
+need Levels 1–2.
 
 ## Syllabus
 
@@ -118,9 +140,43 @@ together into one multi-class application.*
 | 16 | [`16-git-workflow-lab`](Month-4-Testing-Debugging-and-Capstone/Week-16-git-workflow-lab/) | Git & collaboration: branches, merges, conflicts, PRs |
 | 17–18 | [`17-capstone-library-system`](Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system/) | Capstone: a full library management system |
 
+### Month 5 — Databases & SQL (Python + SQLite)
+*From "the data lives in a list" to "the data lives in a database": asking
+questions of it, combining it, changing it safely, analysing it, and
+making the database itself enforce the rules. Three levels, all on one
+dataset of Nordic weather (and, in Level 3, a shop that sells weather
+gear). For instant-feedback practice alongside the weeks, open
+[`sql-playground/index.html`](Month-5-Databases-and-SQL/sql-playground/index.html)
+in a browser.*
+
+| Week | Level | Project | Topic |
+|---|---|---|---|
+| 19 | 1 · Beginner | [`19-sql-select-basics`](Month-5-Databases-and-SQL/Week-19-sql-select-basics/) | `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`, `NULL` |
+| 20 | 1 · Beginner | [`20-sql-aggregates-and-grouping`](Month-5-Databases-and-SQL/Week-20-sql-aggregates-and-grouping/) | Aggregates, `GROUP BY`, `HAVING` |
+| 21 | 2 · Intermediate | [`21-sql-joins-and-keys`](Month-5-Databases-and-SQL/Week-21-sql-joins-and-keys/) | Keys, normalization, `JOIN`, `LEFT JOIN`, subqueries |
+| 22 | 2 · Intermediate | [`22-sqlite-weather-log`](Month-5-Databases-and-SQL/Week-22-sqlite-weather-log/) | Writing data from Python: constraints, transactions, parameters |
+| 23 | 3 · Advanced | [`23-sql-analytics-and-window-functions`](Month-5-Databases-and-SQL/Week-23-sql-analytics-and-window-functions/) | Analytics: CTEs, window functions, `EXISTS`, the fan-out trap |
+| 24 | 3 · Advanced | [`24-sql-business-logic`](Month-5-Databases-and-SQL/Week-24-sql-business-logic/) | Business logic in the database: triggers, views, upserts |
+
+### Month 6 — Web APIs (Python)
+*How programs talk to each other over the network: first as a client
+calling someone else's API, then as the server, with Week 22's weather
+log behind it.*
+
+| Week | Project | Topic |
+|---|---|---|
+| 25 | [`25-how-apis-work`](Month-6-APIs/Week-25-how-apis-work/) | HTTP, JSON, status codes, calling an API from Python |
+| 26 | [`26-build-a-rest-api`](Month-6-APIs/Week-26-build-a-rest-api/) | Building a REST API: routing, validation, status codes |
+
 ## Where this leads
 
-After Week 18, the natural next step is `Laboration_1` in the
+After Week 18, the halfway checkpoint is `Laboration_1` in the
 `teacher_repo_for_assignment` repository. Its README's own "Concepts
 Refresher" section is a good gut-check: if it reads as a reminder rather
-than new material, this course did its job.
+than new material, the fundamentals part of this course did its job.
+
+After Week 26 you have the pieces of most real applications: a database,
+the SQL to query and protect it, and an API in front of it. A good next
+project is to put them together yourself, for example a weather app that
+fetches forecasts from a public API, stores them in SQLite, and serves
+its own summary API.

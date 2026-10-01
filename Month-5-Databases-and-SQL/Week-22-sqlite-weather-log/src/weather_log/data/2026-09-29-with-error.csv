@@ -1,0 +1,4 @@
+city,observed_on,temp_max_c,temp_min_c,precipitation_mm,wind_ms,conditions
+Stockholm,2026-09-29,11.8,5.4,0.3,4.4,cloud
+Oslo,2026-09-29,10.9,4.1,0.0,2.8,sun
+Kiruna,2026-09-29,2.2,-3.5,1.7,5.0,hail
