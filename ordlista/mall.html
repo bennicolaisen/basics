@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kodglosor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one centred column; a sticky toolbar with part filter and mode tabs, then the active mode. */
+/* Built from mall.html by bygg.py; edit the template and termer.json, not index.html. */
+:root {
+  --bg: #f0eff5;
+  --surface: #ffffff;
+  --surface-2: #f6f5fa;
+  --ink: #1b1a2b;
+  --muted: #5c5a72;
+  --line: #d9d7e4;
+  --accent: #4a3fb8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e7e4fa;
+  --good: #23764a;
+  --good-soft: #dff1e6;
+  --bad: #b0322b;
+  --bad-soft: #f8e2df;
+  --code-bg: #f3f2f8;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121119;
+    --surface: #1b1a25;
+    --surface-2: #22212e;
+    --ink: #e7e5f2;
+    --muted: #a19eb8;
+    --line: #34324a;
+    --accent: #a59bff;
+    --accent-ink: #15122e;
+    --accent-soft: #2b2650;
+    --good: #62c991;
+    --good-soft: #163626;
+    --bad: #f28b80;
+    --bad-soft: #3b1d1a;
+    --code-bg: #16151f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121119;
+  --surface: #1b1a25;
+  --surface-2: #22212e;
+  --ink: #e7e5f2;
+  --muted: #a19eb8;
+  --line: #34324a;
+  --accent: #a59bff;
+  --accent-ink: #15122e;
+  --accent-soft: #2b2650;
+  --good: #62c991;
+  --good-soft: #163626;
+  --bad: #f28b80;
+  --bad-soft: #3b1d1a;
+  --code-bg: #16151f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font-body); }
+.page { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; }
+code { font-family: var(--font-mono); font-size: 0.88em; background: var(--code-bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+
+.masthead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 32px; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+.masthead h1 { font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.05; }
+.masthead p { margin: 8px 0 0; color: var(--muted); max-width: 56ch; }
+.progress { min-width: 210px; display: grid; gap: 6px; }
+.progress-label { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress-label strong { color: var(--ink); }
+.progress-track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: var(--good); transition: width 0.3s ease; }
+
+.toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--bg); padding-block: 8px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
+.tab { font: 700 0.95rem var(--font-body); border: 0; background: transparent; color: var(--muted); padding: 8px 14px; border-radius: 7px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+select, input[type="search"], input[type="text"] {
+  font: 1rem var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; max-width: 100%;
+}
+label.inline { display: flex; gap: 8px; align-items: center; font-size: 0.95rem; color: var(--muted); min-width: 0; max-width: 100%; }
+label.inline select, label.inline input { min-width: 0; flex: 1 1 auto; }
+.page > * { min-width: 0; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
+.btn { font: 700 0.95rem var(--font-body); border-radius: 8px; padding: 9px 16px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-good { background: var(--good-soft); border-color: var(--good); }
+.btn-bad { background: var(--bad-soft); border-color: var(--bad); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Läs */
+.term-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.term-item { display: grid; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.term-item:last-child { border-bottom: 0; }
+.term-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.term-en { font: 700 1.1rem var(--font-display); }
+.term-sv { color: var(--muted); }
+.term-item p { margin: 0; max-width: 68ch; }
+.chips { margin-left: auto; display: flex; gap: 6px; }
+.chip { font-size: 0.75rem; font-weight: 700; border-radius: 999px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.chip.known { border-color: var(--good); color: var(--good); }
+.empty { color: var(--muted); padding: 12px 0; }
+
+/* Kort */
+.card { display: grid; gap: 16px; justify-items: center; text-align: center; padding-block: 28px; }
+.card-term { font: 700 clamp(1.8rem, 6vw, 2.6rem) var(--font-display); line-height: 1.1; overflow-wrap: anywhere; }
+.card-answer { display: grid; gap: 8px; max-width: 56ch; }
+.card-answer .sv { font: 700 1.25rem var(--font-display); color: var(--accent); }
+.counter { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+
+/* Förhör */
+.question { display: grid; gap: 14px; }
+.question h2 { font-size: 1.35rem; }
+.choices { display: grid; gap: 8px; }
+.choice { text-align: left; font: 1rem var(--font-body); border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 10px; padding: 12px 14px; cursor: pointer; }
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice.right { border-color: var(--good); background: var(--good-soft); }
+.choice.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.choice:disabled { cursor: default; }
+.feedback { border-radius: 10px; padding: 12px 14px; border: 1px solid; }
+.feedback.good { background: var(--good-soft); border-color: var(--good); }
+.feedback.bad { background: var(--bad-soft); border-color: var(--bad); }
+.feedback p { margin: 0; }
+.result-score { font: 700 2.4rem var(--font-display); font-variant-numeric: tabular-nums; }
+.missed { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.footnote { font-size: 0.85rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .progress-fill { transition: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div>
+      <div class="eyebrow">Basics · Ordlista</div>
+      <h1>Kodglosor</h1>
+      <p id="intro">Alla ord från kursen, med engelska, svenska och en förklaring. Läs, öva med glosskort eller bli förhörd. Sidan kommer ihåg vilka ord du kan.</p>
+    </div>
+    <div class="progress" aria-live="polite">
+      <div class="progress-label">Du kan <strong id="known-count">0</strong> av <span id="total-count">0</span> ord i urvalet</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <label class="inline" for="part-select">Del
+      <select id="part-select"></select>
+    </label>
+    <div class="tabs" role="tablist" aria-label="Läge">
+      <button class="tab" role="tab" id="tab-read" aria-selected="true" aria-controls="view-read" type="button">Läs</button>
+      <button class="tab" role="tab" id="tab-cards" aria-selected="false" aria-controls="view-cards" type="button">Glosskort</button>
+      <button class="tab" role="tab" id="tab-quiz" aria-selected="false" aria-controls="view-quiz" type="button">Förhör</button>
+    </div>
+  </div>
+
+  <section class="panel" id="view-read" role="tabpanel" aria-labelledby="tab-read">
+    <label class="inline" for="search" style="margin-bottom: 8px;">Sök
+      <input type="search" id="search" placeholder="t.ex. lista eller JOIN" autocomplete="off">
+    </label>
+    <ul class="term-list" id="term-list"></ul>
+  </section>
+
+  <section class="panel" id="view-cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
+    <div class="card" id="card"></div>
+  </section>
+
+  <section class="panel" id="view-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div id="quiz"></div>
+  </section>
+
+  <p class="footnote">Ett ord räknas som inlärt när du svarat rätt på det två gånger i rad, i förhöret eller med "Kunde" på glosskorten. Allt sparas bara i den här webbläsaren. Samma ordlista finns som ORDLISTA.md, och i terminalen med <code>python ordlista/ova.py</code>.</p>
+</div>
+
+<script>
+const DATA = __ORDLISTA_DATA__;
+const STORAGE_KEY = "kodglosor-v1";
+const KNOWN_STREAK = 2;
+
+const $ = (id) => document.getElementById(id);
+let streaks = {};
+let currentPart = "all";
+let cardQueue = [];
+let cardIndex = 0;
+let quiz = null;
+
+function loadProgress() {
+  try { streaks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}").streaks || {}; } catch (_) { streaks = {}; }
+}
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ streaks })); } catch (_) { /* storage unavailable */ }
+}
+function record(term, correct) {
+  streaks[term.term] = correct ? (streaks[term.term] || 0) + 1 : 0;
+  saveProgress();
+  renderProgress();
+}
+const isKnown = (term) => (streaks[term.term] || 0) >= KNOWN_STREAK;
+
+function escapeHtml(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function shuffle(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+function normalize(text) { return text.toLowerCase().split(/\s+/).filter(Boolean).join(" "); }
+function isCorrect(answer, term) {
+  return [term.term, ...(term.alternativ || [])].map(normalize).includes(normalize(answer));
+}
+
+function selectedTerms() {
+  if (currentPart === "all") return DATA.terms;
+  const part = DATA.parts[Number(currentPart)];
+  return DATA.terms.filter((t) => t.vecka >= part.first && t.vecka <= part.last);
+}
+function hardestFirst(terms) {
+  return shuffle(terms).sort((a, b) => (streaks[a.term] || 0) - (streaks[b.term] || 0));
+}
+
+function renderProgress() {
+  const terms = selectedTerms();
+  const known = terms.filter(isKnown).length;
+  $("known-count").textContent = known;
+  $("total-count").textContent = terms.length;
+  $("progress-fill").style.width = `${terms.length ? (100 * known) / terms.length : 0}%`;
+}
+
+function renderParts() {
+  const select = $("part-select");
+  select.innerHTML = `<option value="all">Hela kursen (${DATA.terms.length} ord)</option>` +
+    DATA.parts.map((p, i) => `<option value="${i}">${escapeHtml(p.title)}, v. ${p.first}–${p.last}</option>`).join("");
+  select.value = currentPart;
+}
+
+function termDetails(term) {
+  const example = term.exempel ? ` <code>${escapeHtml(term.exempel)}</code>` : "";
+  return `<p>${escapeHtml(term.forklaring)}${example}</p>`;
+}
+
+function renderList() {
+  const query = normalize($("search").value);
+  const terms = selectedTerms()
+    .filter((t) => !query || normalize(`${t.term} ${t.sv} ${t.forklaring}`).includes(query))
+    .sort((a, b) => a.term.localeCompare(b.term, "sv", { sensitivity: "base" }));
+  $("term-list").innerHTML = terms.length ? terms.map((t) => `
+    <li class="term-item">
+      <div class="term-head">
+        <span class="term-en">${escapeHtml(t.term)}</span>
+        <span class="term-sv">${escapeHtml(t.sv)}</span>
+        <span class="chips">
+          ${isKnown(t) ? '<span class="chip known">kan</span>' : ""}
+          <span class="chip">v. ${t.vecka}</span>
+        </span>
+      </div>
+      ${termDetails(t)}
+    </li>`).join("") : `<li class="empty">Inga ord matchar "${escapeHtml($("search").value)}".</li>`;
+}
+
+function startCards() {
+  cardQueue = hardestFirst(selectedTerms());
+  cardIndex = 0;
+  renderCard(false);
+}
+function renderCard(revealed) {
+  const card = $("card");
+  if (cardIndex >= cardQueue.length) {
+    card.innerHTML = `<h2>Alla kort genomgångna</h2>
+      <p class="counter">Du kan ${selectedTerms().filter(isKnown).length} av ${selectedTerms().length} ord i urvalet.</p>
+      <button class="btn btn-primary" type="button" id="cards-again">Börja om</button>`;
+    $("cards-again").addEventListener("click", startCards);
+    return;
+  }
+  const term = cardQueue[cardIndex];
+  card.innerHTML = `
+    <div class="counter">Kort ${cardIndex + 1} av ${cardQueue.length}</div>
+    <div class="card-term">${escapeHtml(term.term)}</div>
+    ${revealed ? `<div class="card-answer"><div class="sv">${escapeHtml(term.sv)}</div>${termDetails(term)}</div>
+      <div class="row"><button class="btn btn-good" type="button" id="card-yes">Kunde</button>
+      <button class="btn btn-bad" type="button" id="card-no">Kunde inte</button></div>`
+    : `<p class="counter">Vad betyder ordet? Tänk ut svaret, och vänd sedan kortet.</p>
+      <button class="btn btn-primary" type="button" id="card-flip">Visa svar</button>`}`;
+  if (revealed) {
+    $("card-yes").addEventListener("click", () => { record(term, true); cardIndex++; renderCard(false); });
+    $("card-no").addEventListener("click", () => { record(term, false); cardIndex++; renderCard(false); });
+    $("card-yes").focus();
+  } else {
+    $("card-flip").addEventListener("click", () => renderCard(true));
+  }
+}
+
+function renderQuizStart(message) {
+  $("quiz").innerHTML = `
+    <div class="question">
+      <h2>Förhör</h2>
+      ${message || ""}
+      <p>Du får antingen förklaringen och skriver det engelska ordet, eller ordet och väljer rätt förklaring. Ord du inte kan kommer först.</p>
+      <div class="row">
+        <label class="inline" for="quiz-count">Antal frågor
+          <select id="quiz-count"><option>10</option><option>20</option><option>40</option></select>
+        </label>
+        <label class="inline" for="quiz-kind">Typ
+          <select id="quiz-kind">
+            <option value="blandat">Blandat</option>
+            <option value="skriv">Skriv ordet</option>
+            <option value="flerval">Flerval</option>
+          </select>
+        </label>
+      </div>
+      <div class="row"><button class="btn btn-primary" type="button" id="quiz-start">Starta förhöret</button></div>
+    </div>`;
+  $("quiz-start").addEventListener("click", () => {
+    const count = Number($("quiz-count").value);
+    startQuiz(hardestFirst(selectedTerms()).slice(0, count), $("quiz-kind").value);
+  });
+}
+
+function startQuiz(questions, kind) {
+  quiz = { questions, kind, index: 0, missed: [] };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (quiz.index >= quiz.questions.length) return renderQuizResult();
+  const term = quiz.questions[quiz.index];
+  const kind = quiz.kind === "blandat" ? (Math.random() < 0.5 ? "skriv" : "flerval") : quiz.kind;
+  const head = `<div class="counter">Fråga ${quiz.index + 1} av ${quiz.questions.length}</div>`;
+  if (kind === "skriv") {
+    $("quiz").innerHTML = `<div class="question">${head}
+      <h2>${escapeHtml(term.forklaring)}</h2>
+      <p class="term-sv">På svenska: ${escapeHtml(term.sv)}</p>
+      <form id="write-form" class="row">
+        <label for="write-answer" class="eyebrow">Engelskt ord</label>
+        <input type="text" id="write-answer" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="btn btn-primary" type="submit">Svara</button>
+      </form>
+      <div id="answer-feedback"></div></div>`;
+    $("write-answer").focus();
+    $("write-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const answer = $("write-answer").value;
+      if (!answer.trim()) return;
+      $("write-answer").disabled = true;
+      event.submitter && (event.submitter.disabled = true);
+      showFeedback(term, isCorrect(answer, term));
+    });
+  } else {
+    const others = shuffle(DATA.terms.filter((t) => t.term !== term.term)).slice(0, 3);
+    const choices = shuffle([term, ...others]);
+    $("quiz").innerHTML = `<div class="question">${head}
+      <h2>Vad betyder <span class="term-en">${escapeHtml(term.term)}</span>?</h2>
+      <div class="choices">${choices.map((c, i) => `<button class="choice" type="button" data-i="${i}">${escapeHtml(c.forklaring)}</button>`).join("")}</div>
+      <div id="answer-feedback"></div></div>`;
+    document.querySelectorAll(".choice").forEach((button) => {
+      button.addEventListener("click", () => {
+        const picked = choices[Number(button.dataset.i)];
+        document.querySelectorAll(".choice").forEach((b) => {
+          b.disabled = true;
+          if (choices[Number(b.dataset.i)] === term) b.classList.add("right");
+        });
+        if (picked !== term) button.classList.add("wrong");
+        showFeedback(term, picked === term);
+      });
+    });
+  }
+}
+
+function showFeedback(term, correct) {
+  record(term, correct);
+  if (!correct) quiz.missed.push(term);
+  const last = quiz.index + 1 >= quiz.questions.length;
+  $("answer-feedback").innerHTML = `<div class="feedback ${correct ? "good" : "bad"}">
+      <p><strong>${correct ? "Rätt!" : "Inte riktigt."}</strong> ${escapeHtml(term.term)} = ${escapeHtml(term.sv)}</p>
+    </div>
+    <div class="row" style="margin-top: 12px;"><button class="btn btn-primary" type="button" id="next-question">${last ? "Se resultatet" : "Nästa fråga"}</button></div>`;
+  $("next-question").addEventListener("click", () => { quiz.index++; renderQuestion(); });
+  $("next-question").focus();
+}
+
+function renderQuizResult() {
+  const total = quiz.questions.length;
+  const right = total - quiz.missed.length;
+  $("quiz").innerHTML = `<div class="question">
+    <div class="eyebrow">Resultat</div>
+    <div class="result-score">${right} av ${total}</div>
+    ${quiz.missed.length ? `<p>Öva mer på:</p><ul class="missed">${quiz.missed.map((t) =>
+      `<li><strong>${escapeHtml(t.term)}</strong> = ${escapeHtml(t.sv)}: ${escapeHtml(t.forklaring)}</li>`).join("")}</ul>`
+      : "<p>Alla rätt. Snyggt!</p>"}
+    <div class="row">
+      ${quiz.missed.length ? '<button class="btn btn-primary" type="button" id="retry-missed">Förhör mig på de missade</button>' : ""}
+      <button class="btn" type="button" id="new-quiz">Nytt förhör</button>
+    </div></div>`;
+  if (quiz.missed.length) $("retry-missed").addEventListener("click", () => startQuiz(shuffle(quiz.missed), quiz.kind));
+  $("new-quiz").addEventListener("click", () => renderQuizStart());
+}
+
+function showView(name) {
+  for (const view of ["read", "cards", "quiz"]) {
+    $(`tab-${view}`).setAttribute("aria-selected", String(view === name));
+    $(`view-${view}`).hidden = view !== name;
+  }
+  if (name === "read") renderList();
+  if (name === "cards") startCards();
+  if (name === "quiz") renderQuizStart();
+}
+
+function refreshAll() {
+  renderProgress();
+  const active = ["read", "cards", "quiz"].find((v) => !$(`view-${v}`).hidden);
+  showView(active);
+}
+
+loadProgress();
+renderParts();
+$("part-select").addEventListener("change", (event) => { currentPart = event.target.value; refreshAll(); });
+$("search").addEventListener("input", renderList);
+for (const view of ["read", "cards", "quiz"]) $(`tab-${view}`).addEventListener("click", () => showView(view));
+renderProgress();
+renderList();
+</script>
+</body>
+</html>
