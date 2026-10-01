@@ -22,10 +22,9 @@ that adds `src` to `sys.path` — whichever makes `pytest` runnable from the
 project directory with zero extra flags. No third-party dependencies
 beyond `pytest` itself.
 
-Java weeks: copy `Laboration_1/pom.xml` (in the sibling
-`teacher_repo_for_assignment` repo, already cloned locally) as the
-starting point — same Java 17 target, same JUnit Jupiter version, same
-plugin set. Change `groupId`/`artifactId`/`name`/`description` and the
+Java weeks: copy an existing Java week's `pom.xml` (Week 10's, for
+example) as the starting point — same Java 17 target, same JUnit Jupiter
+version, same plugin set. Change `groupId`/`artifactId`/`name`/`description` and the
 package to `com.crashcourse.weekNN`.
 
 ## README.md template
@@ -42,20 +41,20 @@ single-file weeks; everything else applies every week):
    important section — don't skimp on it. Use small code snippets inline
    where they clarify faster than prose.
 5. `## Design & Architecture` — how the files relate, and why they're
-   split that way. A short tree diagram like `Laboration_1/README.md`
-   uses is good here.
+   split that way. A short tree diagram, like the existing weeks use, is
+   good here.
 6. `## How to Build & Run` — exact copy-pasteable commands.
 7. `## Testing` — what's covered, how to run it (`pytest` / `mvn test`).
 8. `## Try It Yourself` — 3–5 unsolved extension exercises, harder than
    what's implemented, no solutions given. These are for a student who
    already understands the reference code and wants fresh practice.
 9. Optional `## Reflection` for weeks where a design trade-off is worth
-   naming explicitly (matches `Laboration_1`'s closing section).
+   naming explicitly.
 
 Tone: direct, precise, no filler, no marketing language. Explain the
 *why*, not just the *what* — assume an intelligent reader who is rusty,
-not one who is new. This matches `Laboration_1/README.md` in the sibling
-repo — read it once before writing if you want the calibration.
+not one who is new. Read an existing week's README (Week 4 or Week 17,
+say) once before writing if you want the calibration.
 
 ## Code conventions
 
