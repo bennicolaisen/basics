@@ -11,6 +11,19 @@ It assumes you've *seen* programming before (you're in a CS program, after
 all) but re-teaches it from the ground up rather than assuming any of it is
 solid. Nothing here is skipped as "too basic to cover."
 
+The course runs for six months, one project per week:
+
+| Months | Weeks | Part |
+|---|---|---|
+| 1–4 | 1–18 | Programming fundamentals: Python, data structures, OOP, Java, testing, debugging, Git, and a capstone |
+| 5 | 19–24 | Databases and SQL, in three levels: beginner, intermediate, advanced |
+| 6 | 25–26 | Web APIs: calling one, then building one on top of your own database |
+
+The two halves use the same project format and build on each other: the
+SQL weeks are written in the Python you rebuilt in Months 1–3, use the
+testing habits from Month 4, and end with the database and API layers
+that most real applications are made of.
+
 **New here?** Start with [`GETTING_STARTED.md`](GETTING_STARTED.md) — clone,
 open, run your first week's tests, in five steps.
 
@@ -66,17 +79,17 @@ repo.
 
 ## Pacing
 
-Eighteen weeks for the core course, written as one project per week.
-That's a plan, not a contract — go slower on weeks that expose a real
-gap, and faster on ones that turn out to just be rust. If you only have
-four months and need to compress, the four **capstone-adjacent** weeks
-(4, 8, 12, 17) are the ones least safe to skip — they're where the
-month's pieces get put together.
+Twenty-six weeks, written as one project per week. That's a plan, not a
+contract — go slower on weeks that expose a real gap, and faster on ones
+that turn out to just be rust. If you need to compress, the
+**capstone-adjacent** weeks (4, 8, 12, 17, 24, 26) are the ones least safe
+to skip — they're where each month's pieces get put together.
 
-Months 5 and 6 are follow-on tracks for after the core course: databases
-and SQL (Weeks 19–24), then web APIs (Weeks 25–26), which builds on the
-SQL weeks. The SQL track is split into three levels of two weeks each, so
-you can stop after any level with a complete, usable skill set.
+Week 18 is a natural checkpoint (see "Where this leads"). The SQL weeks
+are split into three levels of two weeks each (Weeks 19–20, 21–22,
+23–24), so if time runs short you can stop after any level with a
+complete, usable skill set, and still do Month 6's API weeks, which only
+need Levels 1–2.
 
 ## Syllabus
 
@@ -157,10 +170,10 @@ log behind it.*
 
 ## Where this leads
 
-After Week 18, the natural next step is `Laboration_1` in the
+After Week 18, the halfway checkpoint is `Laboration_1` in the
 `teacher_repo_for_assignment` repository. Its README's own "Concepts
 Refresher" section is a good gut-check: if it reads as a reminder rather
-than new material, this course did its job.
+than new material, the fundamentals part of this course did its job.
 
 After Week 26 you have the pieces of most real applications: a database,
 the SQL to query and protect it, and an API in front of it. A good next
