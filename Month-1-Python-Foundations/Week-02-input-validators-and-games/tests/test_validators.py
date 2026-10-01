@@ -1,3 +1,5 @@
+"""Tester för validators.py: varje regel prövas precis vid gränsen och strax utanför."""
+
 import pytest
 
 from validators_and_games.validators import (

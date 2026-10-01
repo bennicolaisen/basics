@@ -1,3 +1,5 @@
+"""Tester för text_utils.py."""
+
 from function_library.text_utils import is_palindrome, word_count
 
 

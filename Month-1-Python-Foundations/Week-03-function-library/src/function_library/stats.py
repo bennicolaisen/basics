@@ -1,73 +1,62 @@
-"""Pure numeric statistics functions.
+"""Statistik för en lista med tal: medelvärde, median, typvärde och standardavvikelse.
 
-Every function takes a list of numbers and returns a single number (or,
-for `mode`, the value that occurs most often). All of them raise
-`ValueError` on an empty list — there is no meaningful mean, median,
-mode, or spread of zero numbers, so refusing to guess is more correct
-than returning `0` or `None` and letting a wrong answer travel silently
-downstream.
-
-Standard deviation here is the **population** standard deviation
-(divide the sum of squared deviations by `len(nums)`, not `len(nums) - 1`).
-That's a deliberate choice, not the only valid one: the *sample* standard
-deviation (dividing by `n - 1`, "Bessel's correction") is more appropriate
-when `nums` is a sample used to estimate the spread of some larger
-population it was drawn from. Population standard deviation is used here
-instead because it has one fewer edge case to explain to a beginner (it's
-well-defined for `n == 1`, where it correctly gives `0.0`, whereas sample
-stddev is undefined for `n == 1`) and because in this course's examples
-`nums` is always treated as the *entire* dataset of interest, not a
-sample standing in for something larger.
+Alla funktioner kastar ValueError om listan är tom. En tom lista har
+inget medelvärde, och att returnera 0 eller None i stället skulle bara
+låta ett felaktigt svar smita vidare i programmet.
 """
 
 
-def mean(nums: list[float]) -> float:
-    """Arithmetic mean (average) of `nums`."""
-    if not nums:
-        raise ValueError("mean() requires at least one number")
-    return sum(nums) / len(nums)
+def mean(numbers: list[float]) -> float:
+    """Medelvärdet: summan delat med antalet."""
+    if len(numbers) == 0:
+        raise ValueError("mean() behöver minst ett tal")
+    return sum(numbers) / len(numbers)
 
 
-def median(nums: list[float]) -> float:
-    """Middle value of `nums` once sorted; the average of the two middle
-    values when `len(nums)` is even."""
-    if not nums:
-        raise ValueError("median() requires at least one number")
+def median(numbers: list[float]) -> float:
+    """Det mittersta talet när listan är sorterad.
 
-    ordered = sorted(nums)
-    n = len(ordered)
-    mid = n // 2
-
-    if n % 2 == 1:
-        return ordered[mid]
-    return (ordered[mid - 1] + ordered[mid]) / 2
-
-
-def mode(nums: list[float]) -> float:
-    """Most frequently occurring value in `nums`.
-
-    Ties are broken by returning the smallest of the tied values, so the
-    result is deterministic (and reproducible in tests) rather than
-    depending on iteration/insertion order.
+    Med ett jämnt antal tal finns två mittersta, och då är medianen
+    medelvärdet av dem.
     """
-    if not nums:
-        raise ValueError("mode() requires at least one number")
-
-    counts: dict[float, int] = {}
-    for value in nums:
-        counts[value] = counts.get(value, 0) + 1
-
-    highest_count = max(counts.values())
-    tied_for_first = [value for value, count in counts.items() if count == highest_count]
-    return min(tied_for_first)
+    if len(numbers) == 0:
+        raise ValueError("median() behöver minst ett tal")
+    ordered = sorted(numbers)
+    middle = len(ordered) // 2
+    if len(ordered) % 2 == 1:
+        return ordered[middle]
+    return (ordered[middle - 1] + ordered[middle]) / 2
 
 
-def stddev(nums: list[float]) -> float:
-    """Population standard deviation of `nums`. See module docstring for
-    why population (not sample) standard deviation is used here."""
-    if not nums:
-        raise ValueError("stddev() requires at least one number")
+def mode(numbers: list[float]) -> float:
+    """Typvärdet: det tal som förekommer flest gånger.
 
-    avg = mean(nums)
-    variance = sum((x - avg) ** 2 for x in nums) / len(nums)
-    return variance ** 0.5
+    Om flera tal förekommer lika många gånger returneras det minsta av
+    dem, så att svaret alltid blir detsamma för samma lista.
+    """
+    if len(numbers) == 0:
+        raise ValueError("mode() behöver minst ett tal")
+    best = numbers[0]
+    best_count = 0
+    # sorted() gör att de minsta talen prövas först. Eftersom vi bara byter
+    # när ett tal förekommer *fler* gånger vinner det minsta vid lika antal.
+    for value in sorted(numbers):
+        count = numbers.count(value)
+        if count > best_count:
+            best = value
+            best_count = count
+    return best
+
+
+def stddev(numbers: list[float]) -> float:
+    """Standardavvikelsen: hur mycket talen i genomsnitt avviker från medelvärdet.
+
+    Det här är populationens standardavvikelse (dela med antalet tal). Det
+    finns också en variant för stickprov som delar med antalet minus ett;
+    den används när talen bara är ett urval ur en större mängd.
+    """
+    average = mean(numbers)
+    total = 0
+    for value in numbers:
+        total = total + (value - average) ** 2
+    return (total / len(numbers)) ** 0.5

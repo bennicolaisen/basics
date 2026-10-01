@@ -1,27 +1,26 @@
-"""Pure text-processing functions."""
+"""Funktioner för text."""
 
 
 def word_count(text: str) -> int:
-    """Number of whitespace-separated words in `text`.
+    """Antalet ord i texten.
 
-    `str.split()` with no arguments splits on any run of whitespace and
-    discards leading/trailing whitespace, so `"  a  b "` correctly counts
-    as 2, not 3 (from an empty leading token) or a crash.
+    text.split() utan argument delar vid alla mellanslag, tabbar och
+    radbrytningar, och ignorerar mellanslag i början och slutet. Därför
+    räknas "  a  b " som två ord.
     """
     return len(text.split())
 
 
-def is_palindrome(s: str, ignore_case: bool = True, ignore_spaces: bool = True) -> bool:
-    """Whether `s` reads the same forwards and backwards.
+def is_palindrome(text: str, ignore_case: bool = True, ignore_spaces: bool = True) -> bool:
+    """Är texten densamma framlänges och baklänges?
 
-    `ignore_case` and `ignore_spaces` default to True because "is this a
-    palindrome" almost always means "ignoring case and spacing" in casual
-    use (e.g. "A man a plan a canal Panama"); pass either as False to
-    require an exact character-for-character match instead.
+    Som standard bortser funktionen från stora och små bokstäver och från
+    mellanslag, eftersom det är så man brukar mena ("Ni talar bra latin").
+    Skicka in ignore_case=False eller ignore_spaces=False för att kräva
+    exakt likhet tecken för tecken.
     """
-    processed = s
     if ignore_spaces:
-        processed = "".join(processed.split())
+        text = text.replace(" ", "")
     if ignore_case:
-        processed = processed.lower()
-    return processed == processed[::-1]
+        text = text.lower()
+    return text == text[::-1]

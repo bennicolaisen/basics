@@ -1,72 +1,56 @@
-"""A number-guessing CLI game built on top of `parse_int_in_range`.
+"""Ett gissningsspel: datorn tänker på ett tal och du gissar.
 
-The game's control flow (a `while` loop bounded by a max-attempt counter,
-with `break` on a win) is the actual teaching point this week — the
-validator is reused rather than reimplemented here, showing that once a
-piece of logic is a tested function, other code just calls it.
+Spelet återanvänder parse_int_in_range från validators.py för att
+kontrollera varje gissning, i stället för att skriva den koden en gång
+till.
 """
 
 import random
 
 from validators_and_games.validators import parse_int_in_range
 
-DEFAULT_LOW = 1
-DEFAULT_HIGH = 100
-DEFAULT_MAX_ATTEMPTS = 7
+LOW = 1
+HIGH = 100
+MAX_ATTEMPTS = 7
 
 
-def prompt_guess(lo: int, hi: int) -> int:
-    """Prompt until the user enters a valid integer in [lo, hi].
-
-    A parse failure (not a number, or out of range) does not consume one
-    of the player's guessing attempts — it just re-prompts.
-    """
+def ask_for_guess(low, high):
+    """Fråga tills användaren skriver ett heltal mellan low och high."""
     while True:
-        raw = input(f"Guess a number between {lo} and {hi}: ")
+        text = input(f"Gissa ett tal mellan {low} och {high}: ")
         try:
-            return parse_int_in_range(raw, lo, hi)
-        except ValueError as exc:
-            print(f"Invalid guess: {exc}")
+            return parse_int_in_range(text, low, high)
+        except ValueError as error:
+            print(f"Ogiltig gissning: {error}")
 
 
-def play_game(
-    lo: int = DEFAULT_LOW,
-    hi: int = DEFAULT_HIGH,
-    max_attempts: int = DEFAULT_MAX_ATTEMPTS,
-    rng: random.Random | None = None,
-) -> bool:
-    """Run one round of the guessing game. Returns True if the player won.
+def play_game(secret, low, high, max_attempts):
+    """Spela en omgång där svaret är secret. Returnerar True om man vann.
 
-    `rng` is injectable so this function *could* be tested deterministically
-    (pass a seeded `random.Random`) even though, per this week's scope, the
-    CLI itself isn't part of the automated test suite.
+    En ogiltig gissning kostar inget försök: ask_for_guess frågar igen.
     """
-    rng = rng or random.Random()
-    secret = rng.randint(lo, hi)
-
-    print(f"I'm thinking of a number between {lo} and {hi}.")
-    print(f"You have {max_attempts} attempts.")
+    print(f"Jag tänker på ett tal mellan {low} och {high}.")
+    print(f"Du har {max_attempts} försök.")
 
     for attempt in range(1, max_attempts + 1):
-        guess = prompt_guess(lo, hi)
-
+        guess = ask_for_guess(low, high)
         if guess == secret:
-            print(f"Correct! The number was {secret}. "
-                  f"You got it in {attempt} attempt(s).")
+            print(f"Rätt! Talet var {secret}. Du klarade det på {attempt} försök.")
             return True
 
         remaining = max_attempts - attempt
         if guess < secret:
-            print(f"Too low. {remaining} attempt(s) left.")
+            print(f"För lågt. {remaining} försök kvar.")
         else:
-            print(f"Too high. {remaining} attempt(s) left.")
+            print(f"För högt. {remaining} försök kvar.")
 
-    print(f"Out of attempts. The number was {secret}.")
+    print(f"Slut på försök. Talet var {secret}.")
     return False
 
 
-def main() -> None:
-    play_game()
+def main():
+    secret = random.randint(LOW, HIGH)
+    play_game(secret, LOW, HIGH, MAX_ATTEMPTS)
 
 
 if __name__ == "__main__":

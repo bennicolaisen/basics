@@ -1,3 +1,5 @@
+"""Tester för analyzer.py: varje funktion, med särskild omsorg om hur lika antal och lika längd sorteras."""
+
 from text_analyzer.analyzer import (
     longest_words,
     tokenize,

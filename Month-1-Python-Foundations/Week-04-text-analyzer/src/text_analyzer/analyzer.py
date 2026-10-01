@@ -1,57 +1,70 @@
-"""Pure text-analysis functions built on list, dict, set, and tuple.
+"""Funktioner som analyserar en text: ord, ordfrekvenser och de längsta orden.
 
-Nothing here reads a file or touches `input()`/`print()` — see `cli.py`
-for the thin layer that turns these into a runnable report.
+Ingen av funktionerna läser filer eller skriver ut något; det gör cli.py.
+Varje funktion använder den samlingstyp som passar uppgiften:
+listor för ord i ordning, en dictionary för "ord -> antal", en mängd för
+unika ord och tupler för par av (ord, antal).
 """
 
 import string
 
-_PUNCTUATION_TABLE = str.maketrans("", "", string.punctuation)
-
 
 def tokenize(text: str) -> list[str]:
-    """Lowercase `text`, strip punctuation, and split on whitespace.
+    """Dela upp texten i ord: små bokstäver, utan skiljetecken.
 
-    Punctuation is removed outright (not just at word edges), so
-    `"don't"` becomes `"dont"` and `"well-known"` becomes `"wellknown"` —
-    a single word each, rather than being split into fragments around
-    the punctuation. That's a deliberate simplification for this week's
-    scope, not the only reasonable choice (see "Try It Yourself").
+    Skiljetecken tas bort helt, även inne i ord, så "don't" blir "dont".
+    Det är en förenkling (se "Prova själv").
     """
-    lowered = text.lower()
-    stripped = lowered.translate(_PUNCTUATION_TABLE)
-    return stripped.split()
+    cleaned = ""
+    for character in text.lower():
+        if character not in string.punctuation:
+            cleaned = cleaned + character
+    return cleaned.split()
 
 
 def word_frequencies(tokens: list[str]) -> dict[str, int]:
-    """Count occurrences of each token, as a dict of token -> count."""
-    freqs: dict[str, int] = {}
+    """Räkna hur många gånger varje ord förekommer: {ord: antal}."""
+    frequencies: dict[str, int] = {}
     for token in tokens:
-        freqs[token] = freqs.get(token, 0) + 1
-    return freqs
+        frequencies[token] = frequencies.get(token, 0) + 1
+    return frequencies
 
 
-def top_n_words(freqs: dict[str, int], n: int) -> list[tuple[str, int]]:
-    """The `n` most frequent (word, count) pairs from `freqs`.
+def by_count_then_word(pair: tuple[str, int]) -> tuple[int, str]:
+    """Sorteringsnyckel för (ord, antal): högst antal först, sedan bokstavsordning.
 
-    Sorted by count descending; ties are broken alphabetically (ascending)
-    so the result is deterministic regardless of dict insertion order.
+    Minustecknet vänder ordningen för antalet utan att vända
+    bokstavsordningen.
     """
-    ordered = sorted(freqs.items(), key=lambda pair: (-pair[1], pair[0]))
+    word, count = pair
+    return (-count, word)
+
+
+def top_n_words(frequencies: dict[str, int], n: int) -> list[tuple[str, int]]:
+    """De n vanligaste orden som (ord, antal), vanligast först.
+
+    Vid lika antal sorteras orden i bokstavsordning, så att svaret blir
+    detsamma varje gång.
+    """
+    ordered = sorted(frequencies.items(), key=by_count_then_word)
     return ordered[:n]
 
 
 def unique_words(tokens: list[str]) -> set[str]:
-    """The distinct words in `tokens`, with duplicates collapsed."""
+    """De olika orden, utan dubbletter."""
     return set(tokens)
 
 
-def longest_words(tokens: list[str], n: int) -> list[str]:
-    """The `n` longest distinct words in `tokens`.
+def by_length_then_word(word: str) -> tuple[int, str]:
+    """Sorteringsnyckel: längst först, sedan bokstavsordning."""
+    return (-len(word), word)
 
-    Operates on the *unique* words (a repeated long word only counts
-    once), sorted by length descending; ties are broken alphabetically
-    (ascending) for a deterministic result.
+
+def longest_words(tokens: list[str], n: int) -> list[str]:
+    """De n längsta olika orden, längst först.
+
+    Dubbletter tas bort först, så att ett långt ord som förekommer fem
+    gånger bara tar en av platserna.
     """
-    ordered = sorted(unique_words(tokens), key=lambda word: (-len(word), word))
+    ordered = sorted(unique_words(tokens), key=by_length_then_word)
     return ordered[:n]

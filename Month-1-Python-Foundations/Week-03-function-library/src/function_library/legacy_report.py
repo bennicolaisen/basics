@@ -1,72 +1,57 @@
-"""LEGACY / TEACHING ARTIFACT — do not imitate this file.
+"""DÅLIGT EXEMPEL: härma inte den här filen.
 
-This module is a deliberately bad "before" example: one giant, badly
-named function that mixes numeric statistics and text processing
-together with no decomposition into smaller pieces. It runs correctly
-(there's no bug hunt here) and it is NOT covered by the automated test
-suite on purpose — it exists to be refactored, not to be an API you
-import and rely on. See this week's README, "Try It Yourself", for the
-exercise: pull this apart into calls against `stats.py`/`text_utils.py`.
+En enda stor funktion med korta, otydliga namn som gör allt på en gång:
+räknar statistik, analyserar text och skriver ut. Den fungerar, men den
+går inte att testa en del i taget och inget i den kan återanvändas.
+Uppgift 1 i "Prova själv" går ut på att dela upp den i anrop till
+stats.py och text_utils.py. Den har inga tester, med flit.
 """
 
 
 def handle_data(d, t):
-    total = 0
-    cnt = 0
+    s = 0
+    c = 0
     for x in d:
-        total = total + x
-        cnt = cnt + 1
-    avg = total / cnt
+        s = s + x
+        c = c + 1
+    avg = s / c
 
-    sd_list = sorted(d)
-    n = len(sd_list)
+    sd = sorted(d)
+    n = len(sd)
     if n % 2 == 0:
-        med = (sd_list[n // 2 - 1] + sd_list[n // 2]) / 2
+        med = (sd[n // 2 - 1] + sd[n // 2]) / 2
     else:
-        med = sd_list[n // 2]
+        med = sd[n // 2]
 
-    counts = {}
-    for x in d:
-        if x in counts:
-            counts[x] = counts[x] + 1
-        else:
-            counts[x] = 1
     best = None
-    bestc = -1
-    for k in counts:
-        if counts[k] > bestc:
-            bestc = counts[k]
-            best = k
+    bc = -1
+    for x in sd:
+        k = 0
+        for y in d:
+            if y == x:
+                k = k + 1
+        if k > bc:
+            bc = k
+            best = x
 
-    vs = 0
+    v = 0
     for x in d:
-        vs = vs + (x - avg) ** 2
-    var = vs / cnt
-    sd = var ** 0.5
+        v = v + (x - avg) ** 2
+    dev = (v / c) ** 0.5
 
-    words = t.split()
-    wc = len(words)
+    w = len(t.split())
 
-    clean = ""
+    cl = ""
     for ch in t:
         if ch != " ":
-            clean = clean + ch
-    clean_lower = clean.lower()
-    is_pal = clean_lower == clean_lower[::-1]
+            cl = cl + ch
+    cl = cl.lower()
+    p = cl == cl[::-1]
 
-    print("=== Report ===")
-    print("Average:", avg)
+    print("=== Rapport ===")
+    print("Medelvärde:", avg)
     print("Median:", med)
-    print("Mode:", best)
-    print("StdDev:", sd)
-    print("Word count:", wc)
-    print("Is palindrome:", is_pal)
-
-    return {
-        "average": avg,
-        "median": med,
-        "mode": best,
-        "stddev": sd,
-        "word_count": wc,
-        "is_palindrome": is_pal,
-    }
+    print("Typvärde:", best)
+    print("Standardavvikelse:", dev)
+    print("Antal ord:", w)
+    print("Palindrom:", p)
