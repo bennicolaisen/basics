@@ -50,14 +50,6 @@ same shape:
   code makes sense and you want to practice writing it yourself instead of
   reading it.
 
-This mirrors the style of `Laboration_1` in the `teacher_repo_for_assignment`
-repository — that lab (a hand-built concurrent worker thread pool in Java)
-is deliberately where this course is aimed: by the end of Month 4 you should
-be able to open that lab's README and have every concept in it — threads
-as a pattern of coordinated objects, `synchronized`/`wait`/`notifyAll`
-mechanics aside — read like something you already know how to build with,
-not something intimidating.
-
 **Use it however fits:** read a project's README and code without touching
 anything, to review a topic quickly. Or delete the implementation and
 rebuild it yourself from the README's objectives, then diff against the
@@ -72,8 +64,8 @@ repo.
   That includes the databases and web servers in Months 5–6: SQLite ships
   with Python as the `sqlite3` module, and `http.server`/`urllib` cover
   HTTP.
-- **Java 17** and **Maven** (Month 3 onward) — same toolchain as
-  `Laboration_1`, so nothing new to install when you get there.
+- **Java 17** and **Maven** (Weeks 10–17) — Maven downloads the one
+  dependency the Java weeks use (JUnit 5) by itself.
 - A terminal and a text editor or IDE you're comfortable in. An IDE with a
   real debugger (IntelliJ, VS Code) matters more from Month 3 onward.
 
@@ -85,7 +77,8 @@ that turn out to just be rust. If you need to compress, the
 **capstone-adjacent** weeks (4, 8, 12, 17, 24, 26) are the ones least safe
 to skip — they're where each month's pieces get put together.
 
-Week 18 is a natural checkpoint (see "Where this leads"). The SQL weeks
+Week 18 is the halfway point, where the programming fundamentals end
+and the databases and APIs half begins (see "Where this leads"). The SQL weeks
 are split into three levels of two weeks each (Weeks 19–20, 21–22,
 23–24), so if time runs short you can stop after any level with a
 complete, usable skill set, and still do Month 6's API weeks, which only
@@ -170,10 +163,10 @@ log behind it.*
 
 ## Where this leads
 
-After Week 18, the halfway checkpoint is `Laboration_1` in the
-`teacher_repo_for_assignment` repository. Its README's own "Concepts
-Refresher" section is a good gut-check: if it reads as a reminder rather
-than new material, the fundamentals part of this course did its job.
+At the halfway point, after Week 18, a good gut-check is to reread the
+"Concepts Refresher" sections of Months 1–3: if they read as reminders
+rather than new material, the fundamentals part of this course did its
+job.
 
 After Week 26 you have the pieces of most real applications: a database,
 the SQL to query and protect it, and an API in front of it. A good next

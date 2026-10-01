@@ -10,10 +10,7 @@ contracts; exceptions and testing gave you ways to make failure explicit
 and correctness verifiable. A Library Management System — items that can
 be checked out, members with limits, a catalog that has to enforce rules
 consistently — is small enough to build in a week and real enough to need
-every one of those tools at once. This is also, explicitly, the last stop
-before `Laboration_1` in the `teacher_repo_for_assignment` repository -
-see the closing note at the end of Design & Architecture for exactly how
-this project's shape anticipates that one.
+every one of those tools at once.
 
 ## Objectives
 
@@ -116,23 +113,20 @@ Three layers, each with one job:
 `Member` never imports `LibraryItem`'s checkout logic, and `LibraryItem`
 never imports `Library`. Neither one needs to. That separation — state
 belongs to the object it describes, coordination belongs to a dedicated
-orchestrator above both — is the same design principle
-`Laboration_1/README.md`'s "Design & Architecture" section names for its
-own class split (`Worker`/`PooledWorker` own their own state;
-`ThreadPoolManager` is the one class that coordinates many of them at
-once).
+orchestrator above both — is a design principle worth carrying into any
+program with more than a handful of classes.
 
 **Where this leads next.** `Library` here does synchronous,
-single-threaded coordination between `Member`s and `LibraryItem`s the same
-way `ThreadPoolManager` in `Laboration_1` coordinates `Client`s and
-`PooledWorker`s — one orchestrator, sitting above two kinds of participant
-objects that don't talk to each other directly. The difference is that
-everything in this project happens on one thread, in a strict sequence,
-with no possibility of two `checkOut` calls racing each other. `Laboration_1`
-is exactly this same shape of problem, with that assumption removed: the
-next step is making that same kind of coordination safe when *multiple
-threads* can call it at once — which is precisely what `synchronized`,
-monitors, and `wait()`/`notifyAll()` in `Laboration_1` exist to do.
+single-threaded coordination between `Member`s and `LibraryItem`s — one
+orchestrator, sitting above two kinds of participant objects that don't
+talk to each other directly. Everything happens on one thread, in a
+strict sequence, with no possibility of two `checkOut` calls racing each
+other. Removing that assumption, so that the same coordination stays
+correct when *multiple threads* call it at once, is the subject of
+concurrency (`synchronized`, monitors, `wait()`/`notifyAll()` in Java),
+which is beyond this course. Week 22 meets the same problem from the
+database side: there, a transaction is what keeps two changes from
+interleaving.
 
 ## How to Build & Run
 
