@@ -1,179 +1,394 @@
-# Week 3 — Function Library
+# Vecka 3 — Funktioner på djupet
 
-## Purpose
+## Syfte
 
-Functions aren't just "a way to avoid retyping code" — they're the unit
-of *decomposition*: the tool for breaking a problem too big to hold in
-your head all at once into pieces small enough to write, name, test, and
-reuse individually. This week builds a small library of statistics and
-text-processing functions the proper way, and then, deliberately, next
-to it, builds the *same* functionality the wrong way — one giant
-tangled function — so the difference isn't abstract.
+Funktioner är det viktigaste verktyget för att hålla ordning i ett
+program. Ett program med en enda lång följd av rader blir snabbt omöjligt
+att läsa, ändra och testa. Med funktioner delar du upp ett problem i små
+delar som var och en gör en sak, har ett namn som säger vad, och kan
+testas för sig. Den här veckan lär du dig allt du behöver om funktioner
+för resten av kursen: standardvärden, namngivna argument, var variabler
+"finns", dokumentation, att avvisa ogiltiga värden, och att skriva egna
+tester. Veckans projekt är ett litet bibliotek med funktioner för
+statistik och text, och ett avskräckande exempel på hur det ser ut utan
+dem.
 
-## Objectives
+## Mål
 
-The code in this project concretely demonstrates:
+När veckan är klar kan du:
 
-- Functions with typed parameters and return values, each with a single
-  clear responsibility.
-- Default parameter values (`is_palindrome`'s `ignore_case`/
-  `ignore_spaces`) and how they let a function serve both a common case
-  (no arguments) and less common ones (explicit `False`) from one
-  definition.
-- Local scope: every variable inside a function body (`avg`, `counts`,
-  `ordered`, ...) exists only for that call and can't leak out or collide
-  with a same-named variable elsewhere.
-- Raising `ValueError` at a function's boundary when its precondition
-  (non-empty input) isn't met, instead of returning a misleading
-  placeholder value.
-- Why decomposing a monolith into small, named, single-purpose functions
-  makes code more testable, more reusable, and easier to read — using
-  `legacy_report.py` as the concrete counterexample.
+- ge parametrar standardvärden och anropa funktioner med namngivna argument
+- förklara skillnaden mellan lokala variabler och variabler utanför en
+  funktion, och varför `return` är rätt sätt att få ut ett svar
+- skriva dokumentationstexter (docstrings) och typannoteringar
+- avvisa ogiltiga värden med `raise ValueError` och testa att det sker
+- dela upp ett stort problem i små funktioner som använder varandra
+- importera från Pythons standardbibliotek och från dina egna filer
+- skriva egna tester med `assert`, `pytest.approx` och `pytest.raises`
 
-## Concepts Refresher
+## Genomgång
 
-**Parameters, arguments, and return values.** A parameter is a name in a
-function's definition (`def mean(nums):` — `nums` is the parameter); an
-argument is the actual value passed at the call site (`mean([1, 2, 3])`
-— `[1, 2, 3]` is the argument). `return` sends a value back to the
-caller and immediately exits the function — nothing after a `return` in
-the same branch runs.
+Övningarna finns i `ovningar/` och kontrolleras med
+`python -m pytest kontroll -k 05` (byt 05 mot övningens nummer).
 
-**Default parameter values.** `def is_palindrome(s, ignore_case=True,
-ignore_spaces=True):` means calling `is_palindrome("Racecar")` is exactly
-equivalent to `is_palindrome("Racecar", ignore_case=True,
-ignore_spaces=True)` — the default just fills in when the caller doesn't
-specify. This is what lets one function serve the common case (ignore
-case and spacing, which is what "palindrome" usually means colloquially)
-and the strict case (`is_palindrome(s, ignore_case=False,
-ignore_spaces=False)`) without being two functions.
+### Steg 1: Repetition och funktioner som anropar funktioner
 
-**Scope.** A variable assigned inside a function body only exists while
-that call is running, and is invisible outside it. Call `mean([1,2,3])`
-and then `mean([4,5,6])` — the second call's `nums` and the arithmetic
-inside it have no memory of the first call at all; every call starts
-clean. This is *why* pure functions (no shared mutable state, same
-input always gives same output) are so much easier to reason about and
-test than code that reads or writes some variable declared outside the
-function.
+En funktion tar emot **argument** via sina **parametrar**, gör något och
+**returnerar** ett svar:
 
-**Why `ValueError` on empty input, specifically.** `mean([])` doing
-`sum([]) / len([])` is `0 / 0`, a `ZeroDivisionError` — a real error, but
-one that reports the *symptom* (division by zero) rather than the actual
-*problem* (there's no data to average). Checking `if not nums: raise
-ValueError(...)` up front turns an accidental, confusing failure into a
-deliberate, clearly-worded one. This is the same "validate at the
-boundary" idea from Weeks 1-2, now applied to a function's own
-precondition rather than to user-typed text.
+```python
+def area(width, height):
+    return width * height
+```
 
-**Decomposition: why `legacy_report.py` is bad, concretely.** Open
-`legacy_report.py` and look at `handle_data(d, t)`. It:
+En funktion kan anropa andra funktioner, och svaret från en funktion kan
+skickas direkt in i en annan:
 
-- Does at least six unrelated things in one function body: mean,
-  median, mode, standard deviation, word count, and palindrome check —
-  none of which depend on each other.
-- Names nothing meaningfully (`d`, `t`, `sd_list`, `vs`, `bestc`) — the
-  names carry no information about what the value *is*, only vague
-  hints about its type or role.
-- Can't be tested piece-by-piece. Want to check that the median logic
-  is right? You must also supply valid text for the palindrome check and
-  read the median back out of a dict that also contains five other
-  answers — there's no way to test "just the median part" because there
-  is no "just the median part," only the whole function.
-- Can't be reused. Need just the mode of a different list elsewhere in
-  a program? The only option is to copy-paste the mode-finding loop out
-  of the middle of `handle_data`, because it was never its own function.
+```python
+def is_even(number):
+    return number % 2 == 0
 
-Compare that to `stats.mode(nums)`: it does one thing, its name says
-what that thing is, it can be called and checked in isolation (see
-`tests/test_stats.py`), and it can be reused anywhere a mode is needed —
-including from inside a rewritten, decomposed version of
-`handle_data` itself. That gap — same behavior, wildly different
-testability/reusability/readability — is the entire argument for
-decomposing code into functions, and it's the "Try It Yourself" exercise
-below.
+def is_odd(number):
+    return not is_even(number)
 
-## Design & Architecture
+print(round(area(2.5, 3.3), 1))    # area räknas först, sedan round
+```
+
+Att bygga nya funktioner av gamla gör att varje regel står på ett enda
+ställe. Om `is_even` hade ett fel skulle du bara behöva rätta det där, och
+`is_odd` skulle bli rätt samtidigt.
+
+**Öva:** övning 3.6 och 3.7.
+
+### Steg 2: Standardvärden och namngivna argument
+
+En parameter kan få ett **standardvärde** (*default*), som används om
+anroparen inte skickar något:
+
+```python
+def greet(name, greeting="Hej"):
+    return f"{greeting}, {name}!"
+
+greet("Bo")             # "Hej, Bo!"
+greet("Bo", "Tjena")    # "Tjena, Bo!"
+```
+
+Parametrar med standardvärde måste stå **efter** dem utan.
+
+Argument kan skickas i ordning (**positionella** argument) eller med namn
+(**namngivna** argument, *keyword arguments*). Namngivna argument gör
+anropet tydligare och låter dig hoppa över parametrar du är nöjd med:
+
+```python
+def format_temperature(value, unit="C", decimals=1):
+    return f"{round(value, decimals)} °{unit}"
+
+format_temperature(21.46)                  # "21.5 °C"
+format_temperature(21.46, decimals=2)      # "21.46 °C"   (unit behåller "C")
+```
+
+Du har redan använt namngivna argument: `round(x, ndigits=2)` och
+`print("a", "b", sep="-")`.
+
+**Öva:** övning 3.1, 3.4 och 3.10.
+
+### Steg 3: None och funktioner utan return
+
+En funktion som aldrig når ett `return` (eller som bara skriver `return`)
+returnerar ett specialvärde: **`None`**, som betyder "inget värde".
+
+```python
+def say_hello(name):
+    print(f"Hej, {name}!")
+
+result = say_hello("Bo")    # skriver ut Hej, Bo!
+print(result)               # None
+```
+
+Det är vanligt att få `None` av misstag, när man skrivit `print` i stället
+för `return`. Ser du `None` där du väntade dig ett svar, leta efter en
+funktion som saknar `return`. Kontrollerna i `kontroll/` säger till
+exempel "returnerade None" när en övning inte är löst.
+
+För att fråga om något är `None` skriver man `if result is None:`.
+
+### Steg 4: Var finns variablerna? (räckvidd)
+
+En variabel som skapas inne i en funktion, eller en parameter, är
+**lokal**: den finns bara medan funktionen körs, och syns inte utanför.
+
+```python
+def add_vat(price):
+    total = price * 1.25    # total är lokal
+    return total
+
+add_vat(100)
+print(total)    # NameError: name 'total' is not defined
+```
+
+Det är en fördel: du kan använda namn som `total` och `count` i många
+funktioner utan att de krockar.
+
+Det betyder också att en funktion inte kan ändra en variabel utanför
+genom att ändra sin parameter:
+
+```python
+count = 0
+
+def add_one(count):
+    count = count + 1    # ändrar bara den lokala count
+
+add_one(count)
+print(count)    # fortfarande 0
+```
+
+Rätt sätt är att **returnera** det nya värdet och låta den som anropar
+spara det: `count = add_one(count)`. Funktioner som bara tar in
+argument och returnerar ett svar, utan att ändra något utanför, är
+lättast att förstå och testa.
+
+Konstanter, som `KM_PER_MILE` i vecka 1, skapas utanför funktionerna och
+kan **läsas** inifrån dem. Det är okej eftersom de aldrig ändras.
+
+**Öva:** övning 3.5.
+
+### Steg 5: Dokumentation och typannoteringar
+
+Den första raden i en funktion kan vara en **docstring**, en text inom
+`"""` som förklarar vad funktionen gör:
+
+```python
+def percent(part: float, whole: float) -> float:
+    """Hur många procent part är av whole, avrundat till en decimal."""
+    return round(part / whole * 100, 1)
+```
+
+`: float` efter en parameter och `-> float` efter parentesen är
+**typannoteringar** (*type hints*). De berättar vilken typ som förväntas
+in och vad som kommer ut. Python kontrollerar dem inte när programmet
+körs, men de gör koden lättare att läsa och VS Code använder dem för att
+hjälpa dig. Exempel:
+
+| Annotering | Betyder |
+|---|---|
+| `name: str` | text |
+| `count: int` | heltal |
+| `price: float` | decimaltal (heltal godtas också) |
+| `ok: bool` | `True` eller `False` |
+| `numbers: list[float]` | en lista med decimaltal |
+| `-> None` | returnerar inget |
+
+Från och med nu har koden i kursen typannoteringar.
+
+### Steg 6: Avvisa ogiltiga värden
+
+En funktion bör kontrollera sina argument i början och **kasta ett fel**
+om den inte kan ge ett vettigt svar:
+
+```python
+def mean(numbers: list[float]) -> float:
+    if len(numbers) == 0:
+        raise ValueError("mean() behöver minst ett tal")
+    return sum(numbers) / len(numbers)
+```
+
+Varför inte returnera 0? För att 0 ser ut som ett riktigt svar. Ett
+program som räknar medeltemperaturen för en vecka utan mätningar och får
+0 °C kommer glatt att använda det. Ett `ValueError` stoppar programmet på
+rätt ställe med ett meddelande som säger vad som var fel.
+
+Det har en sida till: kontrollera ogiltiga värden **en gång**, där de
+kommer in, i stället för överallt i programmet.
+
+**Öva:** övning 3.8, 3.9, 3.15 och 3.16.
+
+### Steg 7: Dela upp ett problem
+
+Ett stort problem blir lätt om man delar upp det i små. Ta "räkna ut
+priset för en kundvagn med rabatt":
+
+```python
+def subtotal(prices: list[float]) -> float:
+    return sum(prices)
+
+def apply_discount(amount: float, percent: float) -> float:
+    return amount - amount * percent / 100
+
+def total_price(prices: list[float], discount_percent: float = 0) -> float:
+    return round(apply_discount(subtotal(prices), discount_percent), 2)
+```
+
+Tecken på att en funktion borde delas upp:
+
+- Den är längre än vad som får plats på skärmen.
+- Du behöver en kommentar för att förklara vad ett stycke av den gör.
+  Gör stycket till en funktion och låt namnet förklara.
+- Den gör flera saker: räknar *och* skriver ut, eller räknar två olika
+  saker.
+
+Veckans projekt har ett exempel på motsatsen: `legacy_report.py`.
+
+**Öva:** övning 3.11, 3.12 och 3.13.
+
+### Steg 8: Moduler och import
+
+En **modul** är en Python-fil. Med `import` använder du kod från andra
+filer.
+
+Pythons **standardbibliotek** har hundratals moduler. Några exempel:
+
+```python
+import math
+print(math.pi)           # 3.141592653589793
+print(math.sqrt(16))     # 4.0
+
+import random
+print(random.choice(["sol", "regn", "snö"]))
+```
+
+Från dina egna filer importerar du på samma sätt. Med `from ... import
+...` hämtar du enskilda namn, så att du slipper skriva modulnamnet varje
+gång:
+
+```python
+from function_library.stats import mean, median
+print(mean([1, 2, 3]))
+```
+
+`function_library` är en mapp med Python-filer (ett **paket**), och
+`stats` är filen `stats.py` i den. Importer skrivs överst i filen.
+
+**Öva:** övning 3.2.
+
+### Steg 9: Skriv egna tester
+
+Hittills har du kört tester som någon annan skrivit. Nu skriver du egna.
+En testfil heter `test_något.py`, och varje test är en funktion vars namn
+börjar med `test_`:
+
+```python
+import pytest
+from function_library.stats import mean
+
+
+def test_mean_of_four_numbers():
+    assert mean([1, 2, 3, 4]) == pytest.approx(2.5)
+
+
+def test_mean_of_one_number():
+    assert mean([5]) == 5
+
+
+def test_mean_of_empty_list_raises():
+    with pytest.raises(ValueError):
+        mean([])
+```
+
+- `assert` påstår att något är sant.
+- `pytest.approx` jämför decimaltal med en liten tolerans (vecka 1).
+- `with pytest.raises(ValueError):` påstår att koden i blocket ska kasta
+  ett `ValueError`. Testet misslyckas om det **inte** gör det.
+
+Vad är ett bra test? Ett som skulle misslyckas om funktionen hade ett
+fel. Pröva:
+
+- ett vanligt fall
+- gränser och specialfall: tom lista, ett enda värde, noll, negativa tal
+- varje parameter, både med standardvärdet och ändrat
+- att ogiltiga värden avvisas
+
+Ett test per sak, med ett namn som säger vad som prövas. När ett test
+misslyckas vet du då direkt vad som är fel.
+
+**Öva:** övning 3.14. Där kontrollerar kontrollen dina tester: de måste
+avslöja tre felaktiga versioner av en funktion.
+
+## Veckans projekt: ett funktionsbibliotek
 
 ```
 Week-03-function-library/
-├── conftest.py                          - adds src/ to sys.path for pytest
+├── starta.py                        - räkna statistik på egna tal: python starta.py
 ├── src/
 │   └── function_library/
-│       ├── __init__.py
-│       ├── stats.py                      - mean/median/mode/stddev (tested)
-│       ├── text_utils.py                 - word_count/is_palindrome (tested)
-│       └── legacy_report.py              - BAD example, not tested, for refactoring
-└── tests/
-    ├── test_stats.py
-    └── test_text_utils.py
+│       ├── stats.py                 - mean, median, mode, stddev
+│       ├── text_utils.py            - word_count, is_palindrome
+│       └── legacy_report.py         - DÅLIGT EXEMPEL: allt i en funktion
+├── tests/
+│   ├── test_stats.py
+│   ├── test_text_utils.py
+│   └── test_facit_prova_sjalv.py
+├── ovningar/  kontroll/  facit/
+└── FACIT.md
 ```
 
-`stats.py` and `text_utils.py` are independent of each other — neither
-imports the other — because they're genuinely unrelated concerns
-(numbers vs. text) that only happen to get combined into one report by
-*calling* code, not by being tangled together in their own
-implementations. `legacy_report.py` is kept separate from both,
-excluded from the test suite on purpose, and documented in its own
-module docstring as a teaching artifact rather than part of the real
-library.
+Börja med **`legacy_report.py`**. Funktionen `handle_data(d, t)` räknar
+fyra olika statistiska mått, analyserar en text och skriver ut alltihop.
+Den fungerar, men:
 
-## How to Build & Run
+- Namnen (`d`, `t`, `s`, `c`, `bc`, `k`) säger ingenting.
+- Inget av det den räknar kan återanvändas: vill du bara ha medianen
+  måste du kopiera kod.
+- Den går inte att testa en del i taget, och eftersom den skriver ut i
+  stället för att returnera är den svår att testa alls.
 
-This week's library has no CLI of its own — import the functions where
-you need them:
+Jämför med **`stats.py`** och **`text_utils.py`**, som räknar exakt samma
+saker. Varje mått är en egen funktion med ett tydligt namn, en docstring,
+typannoteringar och en kontroll av tom lista. Några saker att lägga märke
+till:
 
-```bash
-cd Month-1-Python-Foundations/Week-03-function-library
-PYTHONPATH=src python3 -c "
-from function_library.stats import mean, stddev
-print(mean([1, 2, 3, 4, 5]))
-print(stddev([1, 2, 3, 4, 5]))
-"
+- `median` sorterar med `sorted(numbers)`, som ger en **ny** sorterad lista
+  utan att ändra den som skickades in.
+- `mode` använder `numbers.count(value)` och går igenom värdena i
+  sorterad ordning, så att det minsta talet vinner vid lika antal.
+- `stddev` anropar `mean` i stället för att räkna medelvärdet en gång
+  till.
+- `is_palindrome` har två parametrar med standardvärden, så att det
+  vanliga anropet blir enkelt (`is_palindrome("Ni talar bra latin")`) men
+  den som vill kan kräva exakt likhet.
+
+Testerna i `tests/` prövar varje funktion för sig, med vanliga fall,
+specialfall och tom lista.
+
+## Köra programmet
+
+```
+python starta.py
 ```
 
-## Testing
+Skriv några tal med mellanslag mellan, till exempel `1 2 2 3 10`, och
+sedan en mening.
 
-```bash
-cd Month-1-Python-Foundations/Week-03-function-library
-python3 -m pytest -q
+## Testa
+
+```
+python -m pytest                   # testerna för veckans projekt
+python -m pytest kontroll          # kontrollerna av dina övningar
+python -m pytest kontroll --facit  # visar att facit klarar alla kontroller
 ```
 
-`test_stats.py` covers a typical case, a single-element list (the edge
-case that makes population vs. sample stddev diverge in behavior), a
-tie in `mode` (checked to resolve to the smaller value), and the empty-
-list `ValueError` for all four functions, plus a known textbook value
-for `stddev` to catch an arithmetic mistake that a random-looking
-example wouldn't. `test_text_utils.py` covers typical input, empty
-input, internal/leading/trailing whitespace for `word_count`, and both
-default and disabled behavior of each `is_palindrome` flag.
-`legacy_report.py` has no tests — it's a teaching artifact, not part of
-the tested API (see its own module docstring).
+## Prova själv
 
-## Try It Yourself
+1. **Huvuduppgiften:** skriv om `handle_data` som en ny funktion
+   `build_report(numbers, text)` som anropar funktionerna i `stats.py` och
+   `text_utils.py` i stället för att räkna själv, och som **returnerar**
+   rapporten som text i stället för att skriva ut den. Skriv ett test som
+   visar att den ger samma rapport som `handle_data` skriver ut.
+2. Lägg till `variance(numbers)` (medelvärdet av de kvadrerade
+   avvikelserna) i `stats.py`, och skriv om `stddev` så att den bara
+   returnerar roten ur variansen.
+3. Lägg till `most_common_word(text)` i `text_utils.py`. Den ska inte bry
+   sig om stora och små bokstäver, och vid lika antal ska ordet som kommer
+   först i bokstavsordning vinna. Vad ska hända med en tom text?
+4. `mode` väljer det minsta värdet vid lika antal. Skriv `modes(numbers)`
+   som i stället returnerar **alla** värden som delar förstaplatsen, som
+   en sorterad lista.
+5. Skriv `summary(numbers, decimals=2)` som returnerar en rad i stil med
+   `"medel 2.5, median 2.5, typvärde 1, standardavvikelse 1.12"`, där
+   `decimals` styr avrundningen.
 
-1. **The main exercise**: refactor `legacy_report.py`'s `handle_data`
-   into a new, cleanly decomposed function (e.g. `build_report(data,
-   text)`) that calls `stats.mean`, `stats.median`, `stats.mode`,
-   `stats.stddev`, `text_utils.word_count`, and `text_utils.is_palindrome`
-   instead of recomputing each of them inline. It should return the same
-   dict shape `handle_data` does. Then write tests for *your* version —
-   something `handle_data` could never get, since testing it means
-   testing six behaviors at once.
-2. Add `range_(nums)` (note the trailing underscore — `range` is a
-   builtin) returning `max(nums) - min(nums)`, raising `ValueError` on
-   empty input like the rest of `stats.py`.
-3. Add `most_common_word(text: str) -> str` to `text_utils.py`, reusing
-   `word_count`'s tokenizing approach (`text.split()`) rather than
-   inventing a new one, and decide/document what it should do with a
-   tie.
-4. `mode`'s tie-break rule (smallest value wins) is one reasonable
-   choice among several (most-recently-seen, all tied values as a list,
-   ...). Change it to return *all* tied values as a sorted list instead
-   of just one, update its docstring and tests to match, and consider
-   what that changes about `mode`'s return type.
-5. Write a `**kwargs`-based function `describe(nums, **flags)` that
-   calls only the stats functions whose name is a key in `flags` set to
-   `True` (e.g. `describe([1,2,3], mean=True, mode=True)` returns just
-   `{"mean": ..., "mode": ...}`), to get hands-on practice with
-   `**kwargs` beyond what this week's reference code uses.
+## Facit
+
+- Lösningar till övning 3.1–3.16 finns i `facit/`, med samma filnamn som
+  i `ovningar/`.
+- Lösningar till "Prova själv" finns i `facit/prova_sjalv.py`, med
+  förklaringar i [`FACIT.md`](FACIT.md).

@@ -300,6 +300,9 @@ wind, a non-number with its line number) and the bundled data files.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add `record_or_replace(conn, observation)`, which inserts a new
    observation or, if that city already has one for that day, replaces
    it. Use SQLite's `INSERT ... ON CONFLICT (city_id, observed_on) DO

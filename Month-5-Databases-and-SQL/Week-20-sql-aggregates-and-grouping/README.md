@@ -243,6 +243,9 @@ of 0. `test_runner.py` covers the same Python plumbing as Week 19.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. For each date, show the average high across all cities and the number
    of cities that reported, in date order. Which day was coldest on
    average?

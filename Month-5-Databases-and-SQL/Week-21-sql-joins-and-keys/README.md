@@ -246,6 +246,9 @@ schema's keys behave as described (automatic `id`, `UNIQUE` city names).
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. List each country with the number of cities and the number of
    observations it has, including Denmark with 0 observations. (You'll
    need a `LEFT JOIN` and two different `COUNT`s. Check that Sweden's

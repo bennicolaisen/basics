@@ -190,6 +190,9 @@ mvn -q clean test
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add a fifth CSV field, `salary`, which must parse as a non-negative
    `double`. Update `CsvRecord`, `CsvRecordParser`, and write new tests for
    the failure cases you introduce.

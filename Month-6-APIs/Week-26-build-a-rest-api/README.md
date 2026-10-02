@@ -276,6 +276,9 @@ checks what only the server layer can get wrong: the `Content-Type` and
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add `PATCH /cities/{name}/observations/{date}`, which accepts a JSON
    object with any subset of the observation's fields (except
    `observed_on`) and updates only those. Decide which status codes it

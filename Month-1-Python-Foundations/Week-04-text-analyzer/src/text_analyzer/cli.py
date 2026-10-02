@@ -1,49 +1,48 @@
-"""CLI report: reads a text file (from argv, or a bundled sample) and
-prints word-count statistics computed entirely by `analyzer.py`.
+"""Läser en textfil och skriver ut statistik om orden.
+
+    python starta.py                  # analysera den medföljande exempeltexten
+    python starta.py min_text.txt     # analysera en egen fil
 """
 
 import sys
 from pathlib import Path
 
-from text_analyzer.analyzer import (
-    longest_words,
-    tokenize,
-    top_n_words,
-    unique_words,
-    word_frequencies,
-)
+from text_analyzer.analyzer import longest_words, tokenize, top_n_words, unique_words, word_frequencies
 
 SAMPLE_PATH = Path(__file__).parent / "data" / "sample.txt"
 TOP_N = 5
 
 
-def load_text(argv: list[str]) -> str:
-    """Read the file named in argv[1], or fall back to the bundled sample."""
-    path = Path(argv[1]) if len(argv) > 1 else SAMPLE_PATH
-    return path.read_text(encoding="utf-8")
+def read_text(path: Path) -> str:
+    """Läs hela filen som text."""
+    with open(path, encoding="utf-8") as file:
+        return file.read()
 
 
 def print_report(text: str, top_n: int = TOP_N) -> None:
     tokens = tokenize(text)
-    freqs = word_frequencies(tokens)
-    top = top_n_words(freqs, top_n)
-    longest = longest_words(tokens, top_n)
+    frequencies = word_frequencies(tokens)
 
-    print(f"Total words: {len(tokens)}")
-    print(f"Unique words: {len(unique_words(tokens))}")
+    print(f"Antal ord: {len(tokens)}")
+    print(f"Olika ord: {len(unique_words(tokens))}")
 
-    print(f"\nTop {top_n} most frequent words:")
-    for word, count in top:
+    print(f"\nDe {top_n} vanligaste orden:")
+    for word, count in top_n_words(frequencies, top_n):
         print(f"  {word:<15} {count}")
 
-    print(f"\n{top_n} longest distinct words:")
-    for word in longest:
-        print(f"  {word} ({len(word)} chars)")
+    print(f"\nDe {top_n} längsta orden:")
+    for word in longest_words(tokens, top_n):
+        print(f"  {word} ({len(word)} tecken)")
 
 
 def main() -> None:
-    text = load_text(sys.argv)
-    print_report(text)
+    # sys.argv är listan med ord som skrevs i terminalen: sys.argv[0] är
+    # programmets namn, sys.argv[1] det första argumentet efter det.
+    if len(sys.argv) > 1:
+        path = Path(sys.argv[1])
+    else:
+        path = SAMPLE_PATH
+    print_report(read_text(path))
 
 
 if __name__ == "__main__":

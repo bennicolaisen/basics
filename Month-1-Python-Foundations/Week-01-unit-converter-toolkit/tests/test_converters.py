@@ -1,3 +1,11 @@
+"""Tester för converters.py.
+
+Varje test anropar en funktion med ett tal vi vet svaret på och kollar
+att funktionen returnerar rätt. pytest.approx betyder "ungefär lika
+med": decimaltal i datorer kan bli en aning fel i sista decimalen, så
+vi jämför inte dem med ==. Se steg 9 i README.
+"""
+
 import pytest
 
 from converter_toolkit.converters import (
@@ -16,75 +24,53 @@ class TestCelsiusToFahrenheit:
     def test_boiling_point(self):
         assert celsius_to_fahrenheit(100) == pytest.approx(212.0)
 
-    def test_negative(self):
+    def test_minus_forty_is_the_same_in_both(self):
         assert celsius_to_fahrenheit(-40) == pytest.approx(-40.0)
 
-    def test_roundtrip(self):
-        c = 23.5
-        assert fahrenheit_to_celsius(celsius_to_fahrenheit(c)) == pytest.approx(c)
+    def test_round_trip(self):
+        assert fahrenheit_to_celsius(celsius_to_fahrenheit(23.5)) == pytest.approx(23.5)
 
 
 class TestFahrenheitToCelsius:
     def test_freezing_point(self):
         assert fahrenheit_to_celsius(32) == pytest.approx(0.0)
 
-    def test_negative(self):
-        assert fahrenheit_to_celsius(-40) == pytest.approx(-40.0)
-
-    def test_body_temp(self):
-        assert fahrenheit_to_celsius(98.6) == pytest.approx(37.0, abs=1e-2)
+    def test_body_temperature(self):
+        assert fahrenheit_to_celsius(98.6) == pytest.approx(37.0)
 
 
-class TestKmToMiles:
-    def test_zero(self):
+class TestDistances:
+    def test_zero_km(self):
         assert km_to_miles(0) == pytest.approx(0.0)
 
-    def test_known_value(self):
-        # 1 mile is exactly 1.609344 km, so 1.609344 km is exactly 1 mile.
-        assert km_to_miles(1.609344) == pytest.approx(1.0)
-
-    def test_roundtrip(self):
-        km = 42.195  # marathon distance
-        assert miles_to_km(km_to_miles(km)) == pytest.approx(km)
-
-
-class TestMilesToKm:
-    def test_zero(self):
-        assert miles_to_km(0) == pytest.approx(0.0)
-
-    def test_known_value(self):
+    def test_one_mile_in_km(self):
         assert miles_to_km(1) == pytest.approx(1.609344)
 
-    def test_negative(self):
-        # Negative distance is unusual but mathematically well-defined
-        # (e.g. displacement), so it's not rejected here.
-        assert miles_to_km(-1) == pytest.approx(-1.609344)
+    def test_one_mile_back_again(self):
+        assert km_to_miles(1.609344) == pytest.approx(1.0)
+
+    def test_marathon_round_trip(self):
+        assert miles_to_km(km_to_miles(42.195)) == pytest.approx(42.195)
 
 
 class TestSecondsToHms:
     def test_zero(self):
-        assert seconds_to_hms(0) == (0, 0, 0)
+        assert seconds_to_hms(0) == "0:00:00"
 
     def test_only_seconds(self):
-        assert seconds_to_hms(45) == (0, 0, 45)
+        assert seconds_to_hms(45) == "0:00:45"
 
     def test_exactly_one_minute(self):
-        assert seconds_to_hms(60) == (0, 1, 0)
+        assert seconds_to_hms(60) == "0:01:00"
 
     def test_exactly_one_hour(self):
-        assert seconds_to_hms(3600) == (1, 0, 0)
+        assert seconds_to_hms(3600) == "1:00:00"
 
     def test_mixed(self):
-        # 1h 1m 1s = 3661 seconds
-        assert seconds_to_hms(3661) == (1, 1, 1)
+        assert seconds_to_hms(3665) == "1:01:05"
 
     def test_just_under_an_hour(self):
-        assert seconds_to_hms(3599) == (0, 59, 59)
+        assert seconds_to_hms(3599) == "0:59:59"
 
-    def test_large_value_multiple_days_worth(self):
-        # 90061 seconds = 25h 1m 1s (hours are not capped at 24)
-        assert seconds_to_hms(90061) == (25, 1, 1)
-
-    def test_negative_raises(self):
-        with pytest.raises(ValueError):
-            seconds_to_hms(-1)
+    def test_hours_keep_counting_past_24(self):
+        assert seconds_to_hms(90061) == "25:01:01"

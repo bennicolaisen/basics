@@ -139,6 +139,9 @@ extra flags from this directory. Coverage:
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. **Return the actual maze path length as a separate function**,
    `shortest_path_length(grid, start, end)`, without changing
    `solve_maze`. (Hint: DFS as written here finds *a* path, not

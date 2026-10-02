@@ -1,3 +1,5 @@
+"""Tester för stats.py. Varje funktion prövas också med en tom lista, som ska ge ValueError."""
+
 import pytest
 
 from function_library.stats import mean, median, mode, stddev

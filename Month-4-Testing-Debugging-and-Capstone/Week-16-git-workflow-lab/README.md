@@ -141,6 +141,9 @@ correctly continues the id sequence instead of colliding with it.
 
 ## Try It Yourself: the guided merge-conflict exercise
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 This is the actual exercise for the week. Do it inside your own clone of
 this project (a scratch copy is fine — this isn't about preserving
 history, it's about *causing* a conflict and living through resolving it).

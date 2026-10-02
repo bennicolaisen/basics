@@ -154,6 +154,9 @@ flags from this directory. Coverage:
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. **`__repr__` isn't tested here — write tests for it.** Then add a
    `__contains__` to `LinkedList` so `value in my_list` works without
    calling `.find(...)` explicitly, and test that too.
