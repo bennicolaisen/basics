@@ -255,6 +255,9 @@ full run of the demo.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add a `refunded` status: a paid (but not shipped) order can be
    refunded, which returns its stock like a cancellation. Update the
    state diagram, the triggers, and the tests. Which existing trigger

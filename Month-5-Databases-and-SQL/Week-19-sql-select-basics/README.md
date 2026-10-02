@@ -343,6 +343,9 @@ write your own version, and run the tests again.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 Write each answer as a new `.sql` file in `queries/` (for example
 `q12_...sql`) so you can run it with the CLI, and add a test for it.
 

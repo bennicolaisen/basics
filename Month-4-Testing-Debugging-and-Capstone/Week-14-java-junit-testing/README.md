@@ -238,6 +238,9 @@ exception paths via `assertThrows`, a grouped-assertion example via
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. **Using the TDD loop described above, add a `sqrt(double)` method to
    `Calculator` that throws `IllegalArgumentException` for negative input
    — write the failing tests first.** Write a test for the happy path

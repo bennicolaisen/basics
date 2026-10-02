@@ -164,6 +164,9 @@ validate input — that a bad input raises `ValueError`.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. **Trace `fibonacci(6)` by hand before running it.** Write out, on
    paper, every call `fibonacci(6)` makes (it will branch — see the
    Concepts Refresher above), all the way down to base cases, and add up

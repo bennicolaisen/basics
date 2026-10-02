@@ -329,6 +329,9 @@ and the difference between `ApiError` (404, 400) and `ConnectionError`
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add `WeatherClient.warmest_day(city)`, which fetches a city's
    observations and returns the one with the highest `temp_max_c`. Should
    it make one request or several? Write the test first, using the

@@ -158,6 +158,9 @@ to run and read, not something to assert against.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. **Time all four sorts, not just the two searches.** Extend
    `benchmark.py` (or write a new script) to time `bubble_sort`,
    `insertion_sort`, `merge_sort`, and `quick_sort` on a list of 5,000

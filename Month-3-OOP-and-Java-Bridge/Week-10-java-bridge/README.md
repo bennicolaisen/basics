@@ -191,6 +191,9 @@ mvn -q clean test
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add `fahrenheitToKelvin`/`kelvinToFahrenheit` to `Converters`, with
    tests for absolute zero (0 K = -459.67°F).
 2. Add a `TextUtils.longestWord(String text)` that returns the longest

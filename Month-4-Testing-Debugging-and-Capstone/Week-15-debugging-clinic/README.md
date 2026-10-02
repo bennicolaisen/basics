@@ -241,6 +241,9 @@ plus its own input validation.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 This week's exercise is genuinely hands-on: don't just read the case
 study above, reproduce it yourself.
 

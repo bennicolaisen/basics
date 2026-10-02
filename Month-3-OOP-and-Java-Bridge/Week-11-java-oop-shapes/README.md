@@ -164,6 +164,9 @@ Covered:
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add a `Square` — but implement it as a `Rectangle` subclass that
    forces `width == height` in its constructor, rather than duplicating
    the area/perimeter formulas. Does this change anything about how

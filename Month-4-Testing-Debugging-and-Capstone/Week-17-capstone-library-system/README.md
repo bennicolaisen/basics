@@ -163,6 +163,9 @@ Covers:
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add a fourth `LibraryItem` subtype (e.g. `AudioBook`, with a
    `narrator` field and its own loan period) — no changes to `Library`,
    `Member`, or any exception class should be necessary. If you find

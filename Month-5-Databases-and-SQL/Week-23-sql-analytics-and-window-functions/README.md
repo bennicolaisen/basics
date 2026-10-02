@@ -302,6 +302,9 @@ independent plain-Python calculation, not only copied from SQLite.
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. For each product, rank the stores by units sold with `DENSE_RANK`, and
    list only each product's top two stores. Where do ties appear?
 2. Using `LAG` twice (or a frame), find the store-days where revenue rose

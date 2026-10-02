@@ -192,6 +192,9 @@ python3 -m pytest -q
 
 ## Try It Yourself
 
+> **Facit (answer key):** every exercise below is solved, tested and explained
+> in Swedish in [FACIT.md](FACIT.md). Try each one yourself first, then compare.
+
 1. Add a `close_account(account_id)` to `Bank` that only succeeds if the
    account's balance is exactly zero, otherwise raises an exception of
    your own design.
