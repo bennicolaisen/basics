@@ -189,6 +189,7 @@ dem direkt.
 | **reference type** | referenstyp | En typ vars variabler pekar på ett objekt, som String i Java. | 10 |
 | **static typing** | statisk typning | Att varje variabel har en typ som kontrolleras innan programmet körs, som i Java. | 10 |
 | **abstract class** | abstrakt klass | En klass som inte kan användas direkt, men som subklasser bygger vidare på. | 11 |
+| **default method** | default-metod | En metod i ett interface som har en färdig kropp, så att alla klasser som implementerar interfacet får den automatiskt. | 11 |
 | **interface** | gränssnitt | En lista över metoder som en klass lovar att ha, utan att säga hur de fungerar. | 11 |
 | **polymorphism** | polymorfism | Att samma metodanrop gör olika saker beroende på vilket objekt det anropas på. | 11 |
 | **access modifier** | åtkomstmodifierare | Ord som public och private som anger vem som får använda en klass, metod eller variabel. | 12 |
@@ -207,6 +208,7 @@ dem direkt.
 | **defensive programming** | defensiv programmering | Att skriva kod som tål felaktiga indata genom att kontrollera dem. | 13 |
 | **fail fast** | misslyckas tidigt | Att avbryta så fort något är fel, nära orsaken, i stället för att fortsätta med felaktiga värden. | 13 |
 | **parsing** | tolkning | Att läsa text och göra om den till strukturerade data. | 13 |
+| **predicate** | predikat | En funktion som tar ett värde och svarar sant eller falskt, till exempel för att filtrera; i Java interfacet Predicate med metoden test. | 13 |
 | **try-with-resources** | try med resurser | Java-konstruktion som stänger filer och liknande automatiskt; motsvarar with i Python. | 13 |
 | **unchecked exception** | okontrollerat undantag | Java-undantag som inte måste deklareras, till exempel IllegalArgumentException. | 13 |
 | **assertion** | påstående | En kontroll i ett test av att ett värde är det förväntade. | 14 |
@@ -215,8 +217,10 @@ dem direkt.
 | **test-driven development** | testdriven utveckling | Att skriva ett test som misslyckas först, sedan koden som får det att gå igenom. | 14 |
 | **bisection** | bisektion | Att hitta ett fel genom att upprepade gånger halvera området där det kan finnas. | 15 |
 | **breakpoint** | brytpunkt | En markerad rad där debuggern stannar programmet. | 15 |
+| **conditional breakpoint** | villkorad brytpunkt | En brytpunkt som bara stoppar programmet när ett villkor är sant, till exempel när en variabel har fått ett visst värde. | 15 |
 | **debugger** | debugger | Verktyg som låter dig köra ett program steg för steg och titta på variablerna. | 15 |
 | **debugging** | felsökning | Att hitta och rätta fel i ett program. | 15 |
+| **NaN** | inte ett tal (not a number) | Ett särskilt decimalvärde som blir resultatet av till exempel 0.0 / 0.0; det ger inget fel utan följer tyst med i nästa uträkning. | 15 |
 | **stack trace** | stackspår | Listan över funktionsanrop som ledde fram till ett fel; Javas motsvarighet till traceback. | 15 |
 | **branch** | gren | En egen utvecklingslinje i git, där man kan arbeta utan att påverka andra. | 16 |
 | **clone** | klona | Att kopiera ett repo med hela dess historik till sin egen dator. | 16 |
@@ -262,16 +266,20 @@ dem direkt.
 | **normalization** | normalisering | Att dela upp data i tabeller så att varje fakta lagras på ett enda ställe. | 21 |
 | **one-to-many** | en-till-många | En relation där en rad i en tabell hör ihop med många rader i en annan, som en stad och dess mätningar. | 21 |
 | **primary key** | primärnyckel | En kolumn som unikt identifierar varje rad i en tabell. | 21 |
+| **self-join** | självjoin | En join där samma tabell används två gånger med två olika alias, till exempel för att jämföra en dag med dagen innan. | 21 |
 | **subquery** | delfråga | En fråga inuti en annan fråga. | 21 |
 | **constraint** | begränsning (regel) | En regel i databasen som avvisar ogiltiga data, som NOT NULL, UNIQUE eller CHECK. | 22 |
 | **DELETE** | radera | SQL-sats som tar bort rader. | 22 |
 | **INSERT** | infoga | SQL-sats som lägger till rader. | 22 |
+| **migration** | migrering | Ett skript som ändrar strukturen i en databas som redan används, till exempel lägger till en kolumn eller bygger om en tabell, utan att datan går förlorad. | 22 |
 | **parameterized query** | parametriserad fråga | En SQL-fråga där värden skickas separat via platshållare som ?, vilket hindrar SQL-injektion. | 22 |
+| **race condition** | kapplöpningsproblem | Ett fel som bara uppstår när två saker händer samtidigt i en olycklig ordning, till exempel när ett annat program hinner skriva mellan din SELECT och din INSERT. | 22 |
 | **rollback** | återställa | Att ångra alla ändringar i en transaktion. | 22 |
 | **schema** | schema | Beskrivningen av en databas tabeller, kolumner och regler. | 22 |
 | **SQL injection** | SQL-injektion | Säkerhetshål där indata tolkas som SQL-kod; undviks med parametriserade frågor. | 22 |
 | **transaction** | transaktion | En grupp ändringar som antingen genomförs alla eller inte alls. | 22 |
 | **UPDATE** | uppdatera | SQL-sats som ändrar befintliga rader. | 22 |
+| **control group** | kontrollgrupp | En jämförelsegrupp som inte fick förändringen, till exempel butiker utan kampanj, så att effekten går att skilja från allt annat som hände samtidigt. | 23 |
 | **CTE** | namngiven delfråga | Common table expression: en namngiven mellanfråga som skrivs med WITH. | 23 |
 | **fan-out** | dubbelräkning vid join | När en join upprepar rader så att summor räknas flera gånger. | 23 |
 | **PARTITION BY** | dela upp efter | Del av OVER (...) som delar raderna i grupper för en fönsterfunktion. | 23 |
@@ -293,6 +301,8 @@ dem direkt.
 | **body** | kropp | Själva innehållet i en förfrågan eller ett svar, ofta JSON. | 25 |
 | **client** | klient | Programmet som skickar en förfrågan till en server. | 25 |
 | **endpoint** | ändpunkt | En adress i ett API som man kan skicka förfrågningar till. | 25 |
+| **exponential backoff** | exponentiell väntan | Att vänta allt längre mellan varje nytt försök, till exempel 1, 2 och 4 sekunder, så att många klienter inte sänker en server som håller på att komma tillbaka. | 25 |
+| **geocoding** | geokodning | Att göra om ett ortnamn eller en adress till koordinater, latitud och longitud. | 25 |
 | **GET** | hämta | HTTP-metod för att läsa en resurs utan att ändra något. | 25 |
 | **header** | rubrik (huvud) | Metadata i en förfrågan eller ett svar, som Content-Type. | 25 |
 | **HTTP** | HTTP | Protokollet som webbläsare och API:er använder för förfrågningar och svar. | 25 |
@@ -308,10 +318,13 @@ dem direkt.
 | **resource** | resurs | En sak som ett API ger åtkomst till, som en stad eller en mätning. | 25 |
 | **response** | svar | Det servern skickar tillbaka: statuskod, rubriker och ofta en kropp. | 25 |
 | **REST** | REST | En stil för API:er där adresserna namnger resurser och metoderna anger vad man gör med dem. | 25 |
+| **retry** | nytt försök | Att skicka samma förfrågan igen efter ett tillfälligt fel, som ett 5xx-svar eller inget svar alls; ett 4xx-svar ska inte försökas igen. | 25 |
 | **server** | server | Programmet som tar emot förfrågningar och skickar svar. | 25 |
 | **status code** | statuskod | Tresiffrigt tal i svaret som säger hur det gick, som 200, 404 eller 500. | 25 |
 | **timeout** | tidsgräns | Hur länge man väntar på ett svar innan man ger upp. | 25 |
 | **URL** | webbadress | En adress till en resurs, med schema, värd, sökväg och ibland en frågesträng. | 25 |
+| **authentication** | autentisering | Att kontrollera vem som skickar en förfrågan, till exempel med en API-nyckel; misslyckas det svarar ett API med 401. | 26 |
+| **environment variable** | miljövariabel | Ett namngivet värde som operativsystemet ger ett program när det startar; används för inställningar och hemligheter som inte ska stå i koden. | 26 |
 | **framework** | ramverk | Ett färdigt bibliotek som ger strukturen för ett program, som Flask eller FastAPI för webb-API:er. | 26 |
 | **routing** | routning | Att avgöra vilken kod som ska hantera en förfrågan utifrån metod och adress. | 26 |
 | **stateless** | tillståndslös | Att varje förfrågan innehåller allt servern behöver, så att servern inte minns något mellan förfrågningar. | 26 |

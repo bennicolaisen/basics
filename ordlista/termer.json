@@ -1052,6 +1052,12 @@
   "vecka": 11
  },
  {
+  "term": "default method",
+  "sv": "default-metod",
+  "forklaring": "En metod i ett interface som har en färdig kropp, så att alla klasser som implementerar interfacet får den automatiskt.",
+  "vecka": 11
+ },
+ {
   "term": "generics",
   "sv": "generiska typer",
   "forklaring": "Att ange vilken typ en samling innehåller, som List<Book> i Java.",
@@ -1143,6 +1149,12 @@
   "vecka": 13
  },
  {
+  "term": "predicate",
+  "sv": "predikat",
+  "forklaring": "En funktion som tar ett värde och svarar sant eller falskt, till exempel för att filtrera; i Java interfacet Predicate med metoden test.",
+  "vecka": 13
+ },
+ {
   "term": "JUnit",
   "sv": "JUnit",
   "forklaring": "Det vanligaste testramverket för Java.",
@@ -1204,6 +1216,18 @@
   "alternativ": [
    "git bisect"
   ]
+ },
+ {
+  "term": "NaN",
+  "sv": "inte ett tal (not a number)",
+  "forklaring": "Ett särskilt decimalvärde som blir resultatet av till exempel 0.0 / 0.0; det ger inget fel utan följer tyst med i nästa uträkning.",
+  "vecka": 15
+ },
+ {
+  "term": "conditional breakpoint",
+  "sv": "villkorad brytpunkt",
+  "forklaring": "En brytpunkt som bara stoppar programmet när ett villkor är sant, till exempel när en variabel har fått ett visst värde.",
+  "vecka": 15
  },
  {
   "term": "version control",
@@ -1464,6 +1488,15 @@
   "vecka": 21
  },
  {
+  "term": "self-join",
+  "sv": "självjoin",
+  "forklaring": "En join där samma tabell används två gånger med två olika alias, till exempel för att jämföra en dag med dagen innan.",
+  "vecka": 21,
+  "alternativ": [
+   "self join"
+  ]
+ },
+ {
   "term": "constraint",
   "sv": "begränsning (regel)",
   "forklaring": "En regel i databasen som avvisar ogiltiga data, som NOT NULL, UNIQUE eller CHECK.",
@@ -1521,6 +1554,18 @@
   "vecka": 22
  },
  {
+  "term": "migration",
+  "sv": "migrering",
+  "forklaring": "Ett skript som ändrar strukturen i en databas som redan används, till exempel lägger till en kolumn eller bygger om en tabell, utan att datan går förlorad.",
+  "vecka": 22
+ },
+ {
+  "term": "race condition",
+  "sv": "kapplöpningsproblem",
+  "forklaring": "Ett fel som bara uppstår när två saker händer samtidigt i en olycklig ordning, till exempel när ett annat program hinner skriva mellan din SELECT och din INSERT.",
+  "vecka": 22
+ },
+ {
   "term": "CTE",
   "sv": "namngiven delfråga",
   "forklaring": "Common table expression: en namngiven mellanfråga som skrivs med WITH.",
@@ -1552,6 +1597,12 @@
   "term": "fan-out",
   "sv": "dubbelräkning vid join",
   "forklaring": "När en join upprepar rader så att summor räknas flera gånger.",
+  "vecka": 23
+ },
+ {
+  "term": "control group",
+  "sv": "kontrollgrupp",
+  "forklaring": "En jämförelsegrupp som inte fick förändringen, till exempel butiker utan kampanj, så att effekten går att skilja från allt annat som hände samtidigt.",
   "vecka": 23
  },
  {
@@ -1750,6 +1801,27 @@
   "vecka": 25
  },
  {
+  "term": "retry",
+  "sv": "nytt försök",
+  "forklaring": "Att skicka samma förfrågan igen efter ett tillfälligt fel, som ett 5xx-svar eller inget svar alls; ett 4xx-svar ska inte försökas igen.",
+  "vecka": 25
+ },
+ {
+  "term": "exponential backoff",
+  "sv": "exponentiell väntan",
+  "forklaring": "Att vänta allt längre mellan varje nytt försök, till exempel 1, 2 och 4 sekunder, så att många klienter inte sänker en server som håller på att komma tillbaka.",
+  "vecka": 25,
+  "alternativ": [
+   "backoff"
+  ]
+ },
+ {
+  "term": "geocoding",
+  "sv": "geokodning",
+  "forklaring": "Att göra om ett ortnamn eller en adress till koordinater, latitud och longitud.",
+  "vecka": 25
+ },
+ {
   "term": "routing",
   "sv": "routning",
   "forklaring": "Att avgöra vilken kod som ska hantera en förfrågan utifrån metod och adress.",
@@ -1765,6 +1837,18 @@
   "term": "framework",
   "sv": "ramverk",
   "forklaring": "Ett färdigt bibliotek som ger strukturen för ett program, som Flask eller FastAPI för webb-API:er.",
+  "vecka": 26
+ },
+ {
+  "term": "environment variable",
+  "sv": "miljövariabel",
+  "forklaring": "Ett namngivet värde som operativsystemet ger ett program när det startar; används för inställningar och hemligheter som inte ska stå i koden.",
+  "vecka": 26
+ },
+ {
+  "term": "authentication",
+  "sv": "autentisering",
+  "forklaring": "Att kontrollera vem som skickar en förfrågan, till exempel med en API-nyckel; misslyckas det svarar ett API med 401.",
   "vecka": 26
  }
 ]

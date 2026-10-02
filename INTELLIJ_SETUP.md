@@ -52,7 +52,11 @@ Read it top to bottom (**Concepts Refresher** is the real teaching
 content, not filler), then look at the code with the README's
 **Design & Architecture** section as your map. Run its tests to see the
 reference implementation verified correct. Then use the **Try It
-Yourself** section at the end — those exercises are unsolved on purpose.
+Yourself** section at the end. Every exercise there is solved and
+explained (in Swedish) in the week's `FACIT.md`; in the Java weeks the
+solutions live in the `com.crashcourse.weekNN.facit` package, and its
+`FacitTest` runs as part of `Week NN - Run Tests`. Try each exercise
+yourself before you open the answer key.
 
 Suggested loop per week:
 
@@ -65,7 +69,8 @@ Suggested loop per week:
 4. Do the **Try It Yourself** exercises in a scratch file or a new
    branch — nothing in this repo depends on you not touching the
    reference code, so feel free to experiment directly in it too.
-5. Move to the next week.
+5. Compare with `FACIT.md` and the `facit` package.
+6. Move to the next week.
 
 ## If a Run Configuration doesn't show up
 

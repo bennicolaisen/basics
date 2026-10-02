@@ -1,175 +1,175 @@
-# Basics — A Coding Crash Course for Rusty Second-Years
+# Basics — programmering från noll till databaser och API:er
 
-## Who this is for
+## Vem kursen är för
 
-This is a from-scratch refresher for second-year CS students whose
-fundamentals have gone shaky — the kind of gap where `for` loops, function
-decomposition, or "wait, why does this recurse forever" have stopped being
-automatic, and that's starting to get in the way of second-year coursework.
+Kursen börjar från början och förutsätter **ingen erfarenhet alls av
+programmering**. Första veckan installerar du Python och skriver ditt
+första program; sista veckan bygger du ett eget webb-API med en databas
+bakom. Inget hoppas över som "för enkelt".
 
-It assumes you've *seen* programming before (you're in a CS program, after
-all) but re-teaches it from the ground up rather than assuming any of it is
-solid. Nothing here is skipped as "too basic to cover."
+Den passar lika bra för den som har programmerat förut men känner att
+grunderna har blivit osäkra: läs då README-filerna snabbare, och använd
+övningarna och facit för att hitta luckorna.
 
-The course runs for six months, one project per week:
+Kursen är sex månader, ett projekt i veckan:
 
-| Months | Weeks | Part |
+| Månad | Vecka | Del |
 |---|---|---|
-| 1–4 | 1–18 | Programming fundamentals: Python, data structures, OOP, Java, testing, debugging, Git, and a capstone |
-| 5 | 19–24 | Databases and SQL, in three levels: beginner, intermediate, advanced |
-| 6 | 25–26 | Web APIs: calling one, then building one on top of your own database |
+| 1–4 | 1–18 | Programmeringens grunder: Python, datastrukturer, objektorientering, Java, testning, felsökning, Git och ett slutprojekt |
+| 5 | 19–24 | Databaser och SQL, i tre nivåer: nybörjare, mellannivå, avancerad |
+| 6 | 25–26 | Webb-API:er: först att anropa ett, sedan att bygga ett på din egen databas |
 
-The two halves use the same project format and build on each other: the
-SQL weeks are written in the Python you rebuilt in Months 1–3, use the
-testing habits from Month 4, and end with the database and API layers
-that most real applications are made of.
+**Ny här?** Börja med [`GETTING_STARTED.md`](GETTING_STARTED.md): vad du
+installerar, hur du arbetar med en vecka och hur facit och ordlistan
+används.
 
-**New here?** Start with [`GETTING_STARTED.md`](GETTING_STARTED.md) — clone,
-open, run your first week's tests, in five steps.
+## Språk
 
-**Working through this in IntelliJ?** See [`INTELLIJ_SETUP.md`](INTELLIJ_SETUP.md) —
-the repo opens as one project with every Java week's tests and demo apps
-already wired into the Run Configuration dropdown, so you can work
-week-to-week without touching a terminal if you don't want to.
+- **Vecka 1–4 är på svenska**, skrivna för den som aldrig har
+  programmerat. Varje engelskt begrepp förklaras när det dyker upp.
+- **Vecka 5–26 är på engelska**, med **facit på svenska**. Det är
+  medvetet: programmeringens ord är engelska, i koden, i dokumentation och
+  i sökresultat. Efter vecka 4 har du orden som behövs för att läsa
+  vidare.
+- **[Ordlistan](ORDLISTA.md)** har alla 273 begrepp i kursen: det
+  engelska ordet, en svensk översättning och en förklaring, ordnade efter
+  vecka. Du kan öva på dem och bli förhörd, i webbläsaren
+  (`ordlista/index.html`) eller i terminalen (`python ordlista/ova.py`).
 
-## How this course is built
+## Hur kursen är byggd
 
-Every week is a **complete, correct, runnable project** — not a blank
-assignment with pieces missing. Clone it, build it, run it, read the code,
-run the tests, and watch them pass. Each project's `README.md` follows the
-same shape:
+**Vecka 1–4** är lektioner i små steg. Efter varje steg kommer övningar
+i mappen `ovningar/` som du löser själv och kontrollerar automatiskt med
+`python -m pytest kontroll`. Varje vecka avslutas med ett litet projekt
+som använder allt du lärt dig, och med extra övningar ("Prova själv").
+Totalt drygt 70 kontrollerade övningar, alla med facit.
 
-- **Purpose** — why this topic, in plain terms.
-- **Objectives** — what the code concretely demonstrates.
-- **Concepts Refresher** — the minimum background you need if the topic
-  feels rusty, explained from first principles.
-- **Design & Architecture** — how the code is put together and why.
-- **How to Build & Run** — exact commands.
-- **Testing** — what the test suite covers and how to run it.
-- **Try It Yourself** — unsolved extension exercises, for once the reference
-  code makes sense and you want to practice writing it yourself instead of
-  reading it.
+**Vecka 5–26** är **kompletta, fungerande projekt**, inte tomma uppgifter
+med bitar som saknas. Du laddar ner, kör, läser koden, kör testerna och
+ser dem gå igenom. Varje veckas `README.md` har samma delar:
 
-**Use it however fits:** read a project's README and code without touching
-anything, to review a topic quickly. Or delete the implementation and
-rebuild it yourself from the README's objectives, then diff against the
-reference. Or just use the "Try It Yourself" section at the end of each
-week as fresh, unsolved practice. All three are legitimate ways to use this
-repo.
+- **Purpose** — varför ämnet är viktigt.
+- **Objectives** — vad koden konkret visar.
+- **Concepts Refresher** — själva undervisningen, förklarad från grunden.
+- **Design & Architecture** — hur koden är uppdelad och varför.
+- **How to Build & Run** — exakta kommandon.
+- **Testing** — vad testerna täcker och hur de körs.
+- **Try It Yourself** — 3–5 övningar som bygger vidare på veckans kod.
 
-## Prerequisites
+**Varje övning har facit.** I varje vecka finns en `FACIT.md` på
+svenska som löser varje övning och förklarar hur man tänker, inklusive
+vanliga fel och varför ett annat sätt hade varit sämre. Lösningarna finns
+också som körbar kod (i `facit/`, eller i ett `facit`-paket i
+Java-veckorna) med egna tester, som körs tillsammans med veckans tester.
+Facit är alltså kontrollerat, inte bara skrivet.
 
-- **Python 3.10+** (Months 1–2, Week 9, and Months 5–6) — no third-party
-  packages; everything uses the standard library and `pytest` for tests.
-  That includes the databases and web servers in Months 5–6: SQLite ships
-  with Python as the `sqlite3` module, and `http.server`/`urllib` cover
-  HTTP.
-- **Java 17** and **Maven** (Weeks 10–17) — Maven downloads the one
-  dependency the Java weeks use (JUnit 5) by itself.
-- A terminal and a text editor or IDE you're comfortable in. An IDE with a
-  real debugger (IntelliJ, VS Code) matters more from Month 3 onward.
+## Det du behöver
 
-## Pacing
+- **Python 3.10+** (vecka 1–9 och 19–26) och `pytest`. Inga andra
+  paket: databaserna och webbservrarna i månad 5–6 använder det som
+  redan följer med Python (`sqlite3`, `http.server`, `urllib`).
+- **En editor**, till exempel Visual Studio Code (gratis).
+- **Java 17** och **Maven** (vecka 10–17). Enklast via IntelliJ IDEA
+  Community, se [`INTELLIJ_SETUP.md`](INTELLIJ_SETUP.md).
 
-Twenty-six weeks, written as one project per week. That's a plan, not a
-contract — go slower on weeks that expose a real gap, and faster on ones
-that turn out to just be rust. If you need to compress, the
-**capstone-adjacent** weeks (4, 8, 12, 17, 24, 26) are the ones least safe
-to skip — they're where each month's pieces get put together.
+## Tempo
 
-Week 18 is the halfway point, where the programming fundamentals end
-and the databases and APIs half begins (see "Where this leads"). The SQL weeks
-are split into three levels of two weeks each (Weeks 19–20, 21–22,
-23–24), so if time runs short you can stop after any level with a
-complete, usable skill set, and still do Month 6's API weeks, which only
-need Levels 1–2.
+Tjugosex veckor, ett projekt i veckan. Det är en plan, inte ett krav: gå
+långsammare på veckor som visar en verklig lucka. Behöver du korta ned
+är veckorna som knyter ihop en månad (4, 8, 12, 17, 24 och 26) de som är
+minst lämpliga att hoppa över.
 
-## Syllabus
+Vecka 18 är halvvägs: där slutar grunderna och databaserna och API:erna
+börjar. SQL-veckorna är tre nivåer om två veckor (19–20, 21–22, 23–24),
+så om tiden tar slut kan du stanna efter vilken nivå som helst med en
+användbar kunskap, och ändå göra API-veckorna i månad 6, som bara kräver
+nivå 1–2.
 
-### Month 1 — Foundations (Python)
-*Getting the absolute basics automatic again: variables, control flow,
-functions, the core collection types.*
+## Kursplan
 
-| Week | Project | Topic |
+### Månad 1 — Grunderna i Python (på svenska)
+*Från ingenting till att skriva egna program: variabler, villkor, loopar,
+funktioner och samlingar av data.*
+
+| Vecka | Projekt | Ämne |
 |---|---|---|
-| 1 | [`01-unit-converter-toolkit`](Month-1-Python-Foundations/Week-01-unit-converter-toolkit/) | Variables, types, expressions, formatted I/O, input validation |
-| 2 | [`02-input-validators-and-games`](Month-1-Python-Foundations/Week-02-input-validators-and-games/) | Control flow: `if`/`elif`/`else`, `while`, `for`, `break`/`continue` |
-| 3 | [`03-function-library`](Month-1-Python-Foundations/Week-03-function-library/) | Functions, parameters, scope, decomposing a monolithic script |
-| 4 | [`04-text-analyzer`](Month-1-Python-Foundations/Week-04-text-analyzer/) | Core collections: `list`, `dict`, `set`, `tuple`, comprehensions |
+| 1 | [`01-unit-converter-toolkit`](Month-1-Python-Foundations/Week-01-unit-converter-toolkit/) | Ditt första program: `print`, variabler, tal och text, `input`, funktioner |
+| 2 | [`02-input-validators-and-games`](Month-1-Python-Foundations/Week-02-input-validators-and-games/) | Villkor och loopar: `if`/`elif`/`else`, `while`, `for`, `break` |
+| 3 | [`03-function-library`](Month-1-Python-Foundations/Week-03-function-library/) | Funktioner på riktigt: parametrar, returvärden, räckvidd, att dela upp ett program |
+| 4 | [`04-text-analyzer`](Month-1-Python-Foundations/Week-04-text-analyzer/) | Samlingar: `list`, `dict`, `set`, `tuple`, comprehensions |
 
-### Month 2 — Recursion & Data Structures (Python)
-*The two things that usually explain "I understood this once and now I
-don't": recursion, and what a data structure actually is under the hood.*
+### Månad 2 — Rekursion och datastrukturer (Python)
+*Två saker som ofta förklarar "jag förstod det en gång men inte nu":
+rekursion, och vad en datastruktur egentligen är.*
 
-| Week | Project | Topic |
+| Vecka | Projekt | Ämne |
 |---|---|---|
-| 5 | [`05-recursion-basics`](Month-2-Recursion-and-Data-Structures/Week-05-recursion-basics/) | Recursion I: base/recursive cases, the call stack, tracing |
-| 6 | [`06-backtracking-puzzles`](Month-2-Recursion-and-Data-Structures/Week-06-backtracking-puzzles/) | Recursion II: backtracking, search-and-undo |
-| 7 | [`07-diy-data-structures`](Month-2-Recursion-and-Data-Structures/Week-07-diy-data-structures/) | Building a linked list, stack, and queue from nothing |
-| 8 | [`08-search-and-sort`](Month-2-Recursion-and-Data-Structures/Week-08-search-and-sort/) | Searching, sorting, and Big-O intuition |
+| 5 | [`05-recursion-basics`](Month-2-Recursion-and-Data-Structures/Week-05-recursion-basics/) | Rekursion I: basfall, rekursionsfall, anropsstacken |
+| 6 | [`06-backtracking-puzzles`](Month-2-Recursion-and-Data-Structures/Week-06-backtracking-puzzles/) | Rekursion II: backtracking, sök och ångra |
+| 7 | [`07-diy-data-structures`](Month-2-Recursion-and-Data-Structures/Week-07-diy-data-structures/) | Bygg en länkad lista, en stack och en kö från grunden |
+| 8 | [`08-search-and-sort`](Month-2-Recursion-and-Data-Structures/Week-08-search-and-sort/) | Sökning, sortering och en känsla för Big-O |
 
-### Month 3 — OOP & the Jump to Java
-*From "a program is a sequence of steps" to "a program is a set of
-objects that collaborate" — and from Python's dynamic typing to Java's
-static, compiled world.*
+### Månad 3 — Objektorientering och steget till Java
+*Från "ett program är en följd av steg" till "ett program är objekt som
+samarbetar", och från Pythons dynamiska typer till Javas statiska,
+kompilerade värld.*
 
-| Week | Project | Topic |
+| Vecka | Projekt | Ämne |
 |---|---|---|
-| 9 | [`09-oop-bank-simulation`](Month-3-OOP-and-Java-Bridge/Week-09-oop-bank-simulation/) | OOP in Python: classes, encapsulation, composition |
-| 10 | [`10-java-bridge`](Month-3-OOP-and-Java-Bridge/Week-10-java-bridge/) | The Java bridge: static typing, compiling, Maven, `main` |
-| 11 | [`11-java-oop-shapes`](Month-3-OOP-and-Java-Bridge/Week-11-java-oop-shapes/) | Java OOP: interfaces, abstract classes, inheritance, polymorphism |
-| 12 | [`12-java-collections-catalog`](Month-3-OOP-and-Java-Bridge/Week-12-java-collections-catalog/) | The Collections Framework, generics, `Comparable`/`Comparator` |
+| 9 | [`09-oop-bank-simulation`](Month-3-OOP-and-Java-Bridge/Week-09-oop-bank-simulation/) | OOP i Python: klasser, inkapsling, komposition |
+| 10 | [`10-java-bridge`](Month-3-OOP-and-Java-Bridge/Week-10-java-bridge/) | Bron till Java: statiska typer, kompilering, Maven, `main` |
+| 11 | [`11-java-oop-shapes`](Month-3-OOP-and-Java-Bridge/Week-11-java-oop-shapes/) | OOP i Java: interface, abstrakta klasser, arv, polymorfism |
+| 12 | [`12-java-collections-catalog`](Month-3-OOP-and-Java-Bridge/Week-12-java-collections-catalog/) | Collections Framework, generics, `Comparable`/`Comparator` |
 
-### Month 4 — Testing, Debugging, Git & Capstone
-*The professional habits around the code — testing it, debugging it when
-it's wrong, collaborating on it — plus a capstone that pulls Months 1–4
-together into one multi-class application.*
+### Månad 4 — Testning, felsökning, Git och slutprojekt
+*Vanorna runt koden: att testa den, felsöka den när den är fel och
+samarbeta kring den, plus ett slutprojekt som knyter ihop månad 1–4.*
 
-| Week | Project | Topic |
+| Vecka | Projekt | Ämne |
 |---|---|---|
-| 13 | [`13-java-exceptions-parser`](Month-4-Testing-Debugging-and-Capstone/Week-13-java-exceptions-parser/) | Exceptions, defensive programming, resilient parsing |
-| 14 | [`14-java-junit-testing`](Month-4-Testing-Debugging-and-Capstone/Week-14-java-junit-testing/) | JUnit 5 in depth, assertions, TDD |
-| 15 | [`15-debugging-clinic`](Month-4-Testing-Debugging-and-Capstone/Week-15-debugging-clinic/) | Systematic debugging: stack traces, breakpoints, bisection |
-| 16 | [`16-git-workflow-lab`](Month-4-Testing-Debugging-and-Capstone/Week-16-git-workflow-lab/) | Git & collaboration: branches, merges, conflicts, PRs |
-| 17–18 | [`17-capstone-library-system`](Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system/) | Capstone: a full library management system |
+| 13 | [`13-java-exceptions-parser`](Month-4-Testing-Debugging-and-Capstone/Week-13-java-exceptions-parser/) | Undantag, defensiv programmering, tålig inläsning |
+| 14 | [`14-java-junit-testing`](Month-4-Testing-Debugging-and-Capstone/Week-14-java-junit-testing/) | JUnit 5 på djupet, testdriven utveckling (TDD) |
+| 15 | [`15-debugging-clinic`](Month-4-Testing-Debugging-and-Capstone/Week-15-debugging-clinic/) | Systematisk felsökning: stackspår, brytpunkter, halvering |
+| 16 | [`16-git-workflow-lab`](Month-4-Testing-Debugging-and-Capstone/Week-16-git-workflow-lab/) | Git: grenar, sammanslagningar, konflikter, pull requests |
+| 17–18 | [`17-capstone-library-system`](Month-4-Testing-Debugging-and-Capstone/Week-17-capstone-library-system/) | Slutprojekt: ett komplett bibliotekssystem |
 
-### Month 5 — Databases & SQL (Python + SQLite)
-*From "the data lives in a list" to "the data lives in a database": asking
-questions of it, combining it, changing it safely, analysing it, and
-making the database itself enforce the rules. Three levels, all on one
-dataset of Nordic weather (and, in Level 3, a shop that sells weather
-gear). For instant-feedback practice alongside the weeks, open
+### Månad 5 — Databaser och SQL (Python + SQLite)
+*Från "datan ligger i en lista" till "datan ligger i en databas": ställa
+frågor till den, kombinera den, ändra den säkert, analysera den och låta
+databasen själv upprätthålla reglerna. Allt på samma data om nordiskt
+väder, och i nivå 3 en butik som säljer väderutrustning. För snabb
+övning med direkt återkoppling, öppna
 [`sql-playground/index.html`](Month-5-Databases-and-SQL/sql-playground/index.html)
-in a browser.*
+i en webbläsare.*
 
-| Week | Level | Project | Topic |
+| Vecka | Nivå | Projekt | Ämne |
 |---|---|---|---|
-| 19 | 1 · Beginner | [`19-sql-select-basics`](Month-5-Databases-and-SQL/Week-19-sql-select-basics/) | `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`, `NULL` |
-| 20 | 1 · Beginner | [`20-sql-aggregates-and-grouping`](Month-5-Databases-and-SQL/Week-20-sql-aggregates-and-grouping/) | Aggregates, `GROUP BY`, `HAVING` |
-| 21 | 2 · Intermediate | [`21-sql-joins-and-keys`](Month-5-Databases-and-SQL/Week-21-sql-joins-and-keys/) | Keys, normalization, `JOIN`, `LEFT JOIN`, subqueries |
-| 22 | 2 · Intermediate | [`22-sqlite-weather-log`](Month-5-Databases-and-SQL/Week-22-sqlite-weather-log/) | Writing data from Python: constraints, transactions, parameters |
-| 23 | 3 · Advanced | [`23-sql-analytics-and-window-functions`](Month-5-Databases-and-SQL/Week-23-sql-analytics-and-window-functions/) | Analytics: CTEs, window functions, `EXISTS`, the fan-out trap |
-| 24 | 3 · Advanced | [`24-sql-business-logic`](Month-5-Databases-and-SQL/Week-24-sql-business-logic/) | Business logic in the database: triggers, views, upserts |
+| 19 | 1 · Nybörjare | [`19-sql-select-basics`](Month-5-Databases-and-SQL/Week-19-sql-select-basics/) | `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`, `NULL` |
+| 20 | 1 · Nybörjare | [`20-sql-aggregates-and-grouping`](Month-5-Databases-and-SQL/Week-20-sql-aggregates-and-grouping/) | Sammanställningar, `GROUP BY`, `HAVING` |
+| 21 | 2 · Mellannivå | [`21-sql-joins-and-keys`](Month-5-Databases-and-SQL/Week-21-sql-joins-and-keys/) | Nycklar, normalisering, `JOIN`, `LEFT JOIN`, subqueries |
+| 22 | 2 · Mellannivå | [`22-sqlite-weather-log`](Month-5-Databases-and-SQL/Week-22-sqlite-weather-log/) | Skriva data från Python: regler i schemat, transaktioner, parametrar |
+| 23 | 3 · Avancerad | [`23-sql-analytics-and-window-functions`](Month-5-Databases-and-SQL/Week-23-sql-analytics-and-window-functions/) | Analys: CTE:er, fönsterfunktioner, `EXISTS`, fan-out-fällan |
+| 24 | 3 · Avancerad | [`24-sql-business-logic`](Month-5-Databases-and-SQL/Week-24-sql-business-logic/) | Affärslogik i databasen: triggrar, vyer, upserts |
 
-### Month 6 — Web APIs (Python)
-*How programs talk to each other over the network: first as a client
-calling someone else's API, then as the server, with Week 22's weather
-log behind it.*
+### Månad 6 — Webb-API:er (Python)
+*Hur program pratar med varandra över nätet: först som klient som
+anropar någon annans API, sedan som server, med vecka 22:s väderlogg
+bakom.*
 
-| Week | Project | Topic |
+| Vecka | Projekt | Ämne |
 |---|---|---|
-| 25 | [`25-how-apis-work`](Month-6-APIs/Week-25-how-apis-work/) | HTTP, JSON, status codes, calling an API from Python |
-| 26 | [`26-build-a-rest-api`](Month-6-APIs/Week-26-build-a-rest-api/) | Building a REST API: routing, validation, status codes |
+| 25 | [`25-how-apis-work`](Month-6-APIs/Week-25-how-apis-work/) | HTTP, JSON, statuskoder, att anropa ett API från Python |
+| 26 | [`26-build-a-rest-api`](Month-6-APIs/Week-26-build-a-rest-api/) | Bygga ett REST-API: routing, validering, statuskoder |
 
-## Where this leads
+## Vart det leder
 
-At the halfway point, after Week 18, a good gut-check is to reread the
-"Concepts Refresher" sections of Months 1–3: if they read as reminders
-rather than new material, the fundamentals part of this course did its
-job.
+Halvvägs, efter vecka 18, är en bra kontroll att läsa om *Concepts
+Refresher* i månad 1–3 och genomgångarna i vecka 1–4. Känns de som
+påminnelser snarare än nytt stoff har grunderna fastnat. Gör också ett
+förhör på hela ordlistan fram till vecka 18.
 
-After Week 26 you have the pieces of most real applications: a database,
-the SQL to query and protect it, and an API in front of it. A good next
-project is to put them together yourself, for example a weather app that
-fetches forecasts from a public API, stores them in SQLite, and serves
-its own summary API.
+Efter vecka 26 har du delarna som de flesta riktiga program består av:
+en databas, SQL för att ställa frågor till den och skydda den, och ett
+API framför. Ett bra nästa projekt är att sätta ihop dem själv, till
+exempel en väderapp som hämtar prognoser från ett öppet API, sparar dem
+i SQLite och erbjuder ett eget API med sammanfattningar.
