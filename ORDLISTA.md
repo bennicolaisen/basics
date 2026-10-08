@@ -41,25 +41,37 @@ dem direkt.
 | **data type** | datatyp | Vilken sorts värde något är, till exempel heltal, decimaltal eller text; typen avgör vad man kan göra med värdet. | 1 |
 | **define** | definiera | Att skapa något, till exempel en funktion med def. Exempel: `def double(x):` | 1 |
 | **docstring** | dokumentationssträng | En text inom """ först i en funktion som förklarar vad den gör. | 1 |
+| **edge case** | gränsfall | Ett fall precis vid en gräns eller i en ytterkant, som en tom lista; där sitter felen ofta. | 1 |
 | **error message** | felmeddelande | Pythons beskrivning av vad som gick fel och var; läses nerifrån och upp. | 1 |
+| **escape sequence** | escape-sekvens | Ett bakstreck följt av ett tecken inne i en sträng, som betyder något annat än tecknen själva: \n är en radbrytning och \\ ett bakstreck. | 1 |
 | **expression** | uttryck | Kod som räknas ut till ett värde, till exempel 2 + 3 eller len(namn). | 1 |
 | **f-string** | f-sträng | En text med f framför citattecknet, där uttryck inom { } byts ut mot sina värden. Exempel: `f"Hej, {namn}!"` | 1 |
 | **float** | flyttal (decimaltal) | Ett tal med decimaler; typen heter float. Python skriver decimaler med punkt. Exempel: `3.14` | 1 |
+| **format specification** | formatspecifikation | Det som står efter kolon i en f-sträng och styr hur värdet visas, till exempel {pris:.2f} för två decimaler. | 1 |
 | **function** | funktion | En namngiven bit kod som kan anropas många gånger och ofta returnerar ett värde. | 1 |
+| **import** | importera | Att hämta in kod från en annan modul så att den kan användas. Exempel: `from math import pi` | 1 |
 | **indentation** | indrag | Mellanslagen i början av en rad; i Python visar de vilka rader som hör till en funktion, en if eller en loop. | 1 |
+| **index** | index | Ett värdes plats i en lista eller text; börjar på 0. | 1 |
 | **input** | inmatning | Det användaren skriver in; funktionen input() väntar på det och ger tillbaka det som text. | 1 |
 | **integer** | heltal | Ett tal utan decimaler; typen heter int i Python. Exempel: `42` | 1 |
 | **integer division** | heltalsdivision | Division som bara ger hela gånger, utan rest; skrivs // i Python. Exempel: `7 // 2  # 3` | 1 |
 | **interpreter** | tolk | Programmet som läser och kör Python-kod rad för rad; det är det som startar när du skriver python. | 1 |
+| **method** | metod | En funktion som hör till ett objekt och anropas med punkt, till exempel text.upper(). | 1 |
+| **module** | modul | En Python-fil vars kod kan användas från andra filer med import. | 1 |
 | **modulo** | modulo (rest) | Resten vid heltalsdivision; skrivs % i Python. Exempel: `7 % 2  # 1` | 1 |
+| **mutation testing** | mutationstestning | Att mäta hur bra tester är genom att köra dem mot avsiktligt felaktiga versioner av koden; bra tester underkänner alla. | 1 |
+| **None** | inget värde | Pythons värde för "ingenting"; det en funktion utan return returnerar. | 1 |
 | **operator** | operator | Ett tecken som utför en operation på värden, till exempel + eller ==. | 1 |
 | **parameter** | parameter | Namnet i funktionsdefinitionen på ett värde som funktionen tar emot. | 1 |
 | **print** | skriva ut | Inbyggd funktion som visar text på skärmen. Exempel: `print("Hej!")` | 1 |
 | **program** | program | En följd av instruktioner som datorn utför, i Python skrivna i en textfil som slutar på .py. | 1 |
 | **pytest** | pytest | Verktyget som letar upp och kör alla testfunktioner vars namn börjar med test_. | 1 |
+| **raw string** | rå sträng | En sträng med r framför, r"...", där bakstreck inte tolkas som escape-sekvenser. | 1 |
 | **return** | returnera | Att lämna tillbaka ett värde från en funktion och avsluta den. | 1 |
 | **return value** | returvärde | Det värde som en funktion lämnar tillbaka med return. | 1 |
+| **round half to even** | avrundning till jämnt tal | Pythons sätt att avrunda halvor: till närmaste jämna tal, så att round(2.5) blir 2 och round(3.5) blir 4. | 1 |
 | **shell** | skal (interaktivt läge) | Pythons interaktiva läge med prompten >>>, där varje rad körs direkt. | 1 |
+| **slicing** | utsnitt | Att plocka ut en del av en lista eller text med [start:slut]. Exempel: `"Göteborg"[0:4]  # "Göte"` | 1 |
 | **snake_case** | snake_case | Sättet att namnge variabler och funktioner i Python: små bokstäver med understreck mellan orden. Exempel: `antal_personer` | 1 |
 | **source code** | källkod | Den text som programmeraren skriver och som datorn sedan kör. | 1 |
 | **string** | sträng (text) | En text, skriven inom citattecken; typen heter str. Exempel: `"Kiruna"` | 1 |
@@ -75,23 +87,19 @@ dem direkt.
 | **comparison** | jämförelse | Att jämföra två värden med till exempel ==, < eller >=; resultatet blir True eller False. | 2 |
 | **condition** | villkor | Ett uttryck som är sant eller falskt och som avgör vad programmet gör. | 2 |
 | **continue** | fortsätta | Nyckelord som hoppar direkt till nästa varv i en loop. | 2 |
-| **edge case** | gränsfall | Ett fall precis vid en gräns eller i en ytterkant, som en tom lista; där sitter felen ofta. | 2 |
 | **exception** | undantag | Ett fel som uppstår medan programmet körs och som kan fångas med try och except. | 2 |
 | **for loop** | for-loop | En loop som går igenom något, ett värde i taget, till exempel varje tecken i en text. | 2 |
 | **if statement** | if-sats | Kod som bara körs om ett villkor är sant; elif och else anger andra fall. | 2 |
-| **index** | index | Ett värdes plats i en lista eller text; börjar på 0. | 2 |
 | **IndexError** | indexfel | Undantag när man hämtar ett index som inte finns i en lista. | 2 |
 | **infinite loop** | oändlig loop | En loop som aldrig tar slut; avbryts i terminalen med Ctrl+C. | 2 |
 | **iteration** | iteration (varv) | Ett varv i en loop, eller att gå igenom något ett värde i taget. | 2 |
 | **list** | lista | En samling värden i en bestämd ordning, som kan ändras. Exempel: `[3, 1, 2]` | 2 |
 | **logical operator** | logisk operator | Orden and, or och not, som kombinerar eller vänder på villkor. | 2 |
 | **loop** | loop (slinga) | Kod som upprepas flera gånger. | 2 |
-| **method** | metod | En funktion som hör till ett objekt och anropas med punkt, till exempel text.upper(). | 2 |
 | **off-by-one error** | ett-fel | Ett vanligt fel där man räknar ett för mycket eller ett för lite, till exempel med range. | 2 |
 | **raise** | kasta (ett fel) | Att själv utlösa ett undantag, till exempel när en funktion fått ett ogiltigt värde. Exempel: `raise ValueError("listan är tom")` | 2 |
 | **random** | slump | Modulen random ger slumptal, till exempel random.randint(1, 6). | 2 |
 | **range** | intervall | Inbyggd funktion som ger en följd av heltal; slutet räknas inte med. Exempel: `range(1, 4)  # 1, 2, 3` | 2 |
-| **slicing** | utsnitt | Att plocka ut en del av en lista eller text med [start:slut]. Exempel: `"Göteborg"[0:4]  # "Göte"` | 2 |
 | **try/except** | fånga fel | Kod som provar något i try och hanterar ett visst fel i except i stället för att krascha. | 2 |
 | **validation** | validering | Att kontrollera att indata är giltiga innan de används. | 2 |
 | **ValueError** | värdefel | Undantag när ett värde har rätt typ men inte går att använda, som int("sju"). | 2 |
@@ -99,11 +107,8 @@ dem direkt.
 | **decomposition** | uppdelning | Att dela upp ett stort problem i mindre delar, ofta funktioner. | 3 |
 | **default value** | standardvärde | Ett värde som en parameter får om anroparen inte skickar något. Exempel: `def greet(name, greeting="Hej"):` | 3 |
 | **global variable** | global variabel | En variabel som skapas utanför alla funktioner och syns i hela filen. | 3 |
-| **import** | importera | Att hämta in kod från en annan modul så att den kan användas. Exempel: `from math import pi` | 3 |
 | **keyword argument** | namngivet argument | Ett argument som skickas med parameterns namn. Exempel: `round(x, ndigits=2)` | 3 |
 | **local variable** | lokal variabel | En variabel som skapas i en funktion och bara finns medan funktionen körs. | 3 |
-| **module** | modul | En Python-fil vars kod kan användas från andra filer med import. | 3 |
-| **None** | inget värde | Pythons värde för "ingenting"; det en funktion utan return returnerar. | 3 |
 | **package** | paket | En mapp med moduler som hör ihop. | 3 |
 | **positional argument** | positionellt argument | Ett argument som kopplas till en parameter efter sin plats i anropet. | 3 |
 | **refactoring** | omstrukturering | Att skriva om kod så att den blir bättre utan att ändra vad den gör. | 3 |

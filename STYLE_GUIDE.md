@@ -34,8 +34,27 @@ Month-1-.../Week-0N-slug/
 readable for a beginner: `PYTEST_DONT_REWRITE` in the kontroll module and
 `--tb=short`.
 
-README headings, in order: `## Syfte`, `## Mål`, `## Genomgång` (with
-`### Steg N` and an "Öva:" list after each step), `## Veckans projekt: …`,
+**Exercises say what, never how.** Week 1 is the model:
+
+- The exercise file states the input, the exact output or return value,
+  one or two examples, and any rule (such as "print may be called once").
+  No tips, and no example in the README that is the exercise with other
+  names.
+- The checks test more cases than the examples: edge cases, values that
+  catch the tempting wrong solution, and for scripts, other start values
+  through `kor(..., ersatt={...})`. A solution that only passes the
+  example must fail.
+- Rules about the code itself (no loops, which functions may be called,
+  values rather than expressions) are checked with `ast`, not by
+  searching the text.
+- Failure messages say which case failed and what was expected, never
+  how to fix it.
+- The README teaches the concept once and links the Python documentation
+  for the rest. Explanations of the traps belong in `FACIT.md`.
+
+README headings, in order: `## Syfte`, `## Mål`, `## Så arbetar du`,
+`## Genomgång` (with `### Steg N` and an "Öva:" line after each step),
+`## Veckans projekt: …`,
 `## Köra programmet`, `## Testa`, `## Prova själv`, `## Facit`.
 
 ### Weeks 5–26

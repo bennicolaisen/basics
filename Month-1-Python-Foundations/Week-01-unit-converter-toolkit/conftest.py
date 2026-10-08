@@ -11,7 +11,6 @@
 """
 
 import importlib.util
-import runpy
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -34,8 +33,18 @@ def _exercise_path(config, name: str) -> Path:
 
 
 @pytest.fixture
+def kallkod(request):
+    """Texten i en övningsfil, för kontroller av regler som "bara ett anrop till print"."""
+
+    def read(name: str) -> str:
+        return _exercise_path(request.config, name).read_text(encoding="utf-8")
+
+    return read
+
+
+@pytest.fixture
 def ovning(request):
-    """Laddar en övningsfil som innehåller funktioner, till exempel ovning("13_funktion_dubbla")."""
+    """Laddar en övningsfil som innehåller funktioner, till exempel ovning("10_avrunda")."""
 
     def load(name: str):
         spec = importlib.util.spec_from_file_location(name, _exercise_path(request.config, name))
@@ -48,26 +57,38 @@ def ovning(request):
 
 @pytest.fixture
 def kor(request, monkeypatch, capsys):
-    """Kör en övningsfil som ett program och låtsas skriva in `inmatning` vid varje input().
+    """Kör en övningsfil som ett program.
+
+    - `inmatning`: det som "skrivs in" vid varje input(), i tur och ordning.
+    - `ersatt`: rader i filen som byts ut innan programmet körs, till
+      exempel {"a = 7": "a = 'hej'"}, för att prova med andra startvärden.
 
     Returnerar ett objekt med `.utskrift` (allt programmet skrev ut, med
     inmatningen ekad som i en terminal) och `.variabler` (programmets
     variabler när det kört klart).
     """
 
-    def run(name: str, inmatning=()):
+    def run(name: str, inmatning=(), ersatt=None):
+        path = _exercise_path(request.config, name)
+        source = path.read_text(encoding="utf-8")
+        for old, new in (ersatt or {}).items():
+            if old not in source:
+                raise AssertionError(f"Raden {old!r} ska stå kvar oförändrad i filen.")
+            source = source.replace(old, new, 1)
+
         answers = list(inmatning)
 
         def fake_input(prompt=""):
             print(prompt, end="")
             if not answers:
-                raise AssertionError("Programmet frågade efter mer inmatning än testet skrev in.")
+                raise AssertionError("Programmet frågade efter mer inmatning än uppgiften säger.")
             value = answers.pop(0)
             print(value)
             return value
 
         monkeypatch.setattr("builtins.input", fake_input)
-        variables = runpy.run_path(str(_exercise_path(request.config, name)), run_name="__main__")
+        variables = {"__name__": "__main__", "__file__": str(path)}
+        exec(compile(source, str(path), "exec"), variables)
         return SimpleNamespace(utskrift=capsys.readouterr().out, variabler=variables)
 
     return run

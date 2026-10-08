@@ -304,6 +304,89 @@
   "exempel": "antal_personer"
  },
  {
+  "term": "index",
+  "sv": "index",
+  "forklaring": "Ett värdes plats i en lista eller text; börjar på 0.",
+  "vecka": 1
+ },
+ {
+  "term": "slicing",
+  "sv": "utsnitt",
+  "forklaring": "Att plocka ut en del av en lista eller text med [start:slut].",
+  "vecka": 1,
+  "alternativ": [
+   "slice"
+  ],
+  "exempel": "\"Göteborg\"[0:4]  # \"Göte\""
+ },
+ {
+  "term": "method",
+  "sv": "metod",
+  "forklaring": "En funktion som hör till ett objekt och anropas med punkt, till exempel text.upper().",
+  "vecka": 1
+ },
+ {
+  "term": "edge case",
+  "sv": "gränsfall",
+  "forklaring": "Ett fall precis vid en gräns eller i en ytterkant, som en tom lista; där sitter felen ofta.",
+  "vecka": 1,
+  "alternativ": [
+   "boundary case"
+  ]
+ },
+ {
+  "term": "None",
+  "sv": "inget värde",
+  "forklaring": "Pythons värde för \"ingenting\"; det en funktion utan return returnerar.",
+  "vecka": 1
+ },
+ {
+  "term": "module",
+  "sv": "modul",
+  "forklaring": "En Python-fil vars kod kan användas från andra filer med import.",
+  "vecka": 1
+ },
+ {
+  "term": "import",
+  "sv": "importera",
+  "forklaring": "Att hämta in kod från en annan modul så att den kan användas.",
+  "vecka": 1,
+  "exempel": "from math import pi"
+ },
+ {
+  "term": "escape sequence",
+  "sv": "escape-sekvens",
+  "forklaring": "Ett bakstreck följt av ett tecken inne i en sträng, som betyder något annat än tecknen själva: \\n är en radbrytning och \\\\ ett bakstreck.",
+  "vecka": 1
+ },
+ {
+  "term": "raw string",
+  "sv": "rå sträng",
+  "forklaring": "En sträng med r framför, r\"...\", där bakstreck inte tolkas som escape-sekvenser.",
+  "vecka": 1
+ },
+ {
+  "term": "format specification",
+  "sv": "formatspecifikation",
+  "forklaring": "Det som står efter kolon i en f-sträng och styr hur värdet visas, till exempel {pris:.2f} för två decimaler.",
+  "vecka": 1
+ },
+ {
+  "term": "round half to even",
+  "sv": "avrundning till jämnt tal",
+  "forklaring": "Pythons sätt att avrunda halvor: till närmaste jämna tal, så att round(2.5) blir 2 och round(3.5) blir 4.",
+  "vecka": 1,
+  "alternativ": [
+   "banker's rounding"
+  ]
+ },
+ {
+  "term": "mutation testing",
+  "sv": "mutationstestning",
+  "forklaring": "Att mäta hur bra tester är genom att köra dem mot avsiktligt felaktiga versioner av koden; bra tester underkänner alla.",
+  "vecka": 1
+ },
+ {
   "term": "condition",
   "sv": "villkor",
   "forklaring": "Ett uttryck som är sant eller falskt och som avgör vad programmet gör.",
@@ -393,28 +476,6 @@
   "exempel": "[3, 1, 2]"
  },
  {
-  "term": "index",
-  "sv": "index",
-  "forklaring": "Ett värdes plats i en lista eller text; börjar på 0.",
-  "vecka": 2
- },
- {
-  "term": "slicing",
-  "sv": "utsnitt",
-  "forklaring": "Att plocka ut en del av en lista eller text med [start:slut].",
-  "vecka": 2,
-  "alternativ": [
-   "slice"
-  ],
-  "exempel": "\"Göteborg\"[0:4]  # \"Göte\""
- },
- {
-  "term": "method",
-  "sv": "metod",
-  "forklaring": "En funktion som hör till ett objekt och anropas med punkt, till exempel text.upper().",
-  "vecka": 2
- },
- {
   "term": "exception",
   "sv": "undantag",
   "forklaring": "Ett fel som uppstår medan programmet körs och som kan fångas med try och except.",
@@ -449,15 +510,6 @@
   "sv": "indexfel",
   "forklaring": "Undantag när man hämtar ett index som inte finns i en lista.",
   "vecka": 2
- },
- {
-  "term": "edge case",
-  "sv": "gränsfall",
-  "forklaring": "Ett fall precis vid en gräns eller i en ytterkant, som en tom lista; där sitter felen ofta.",
-  "vecka": 2,
-  "alternativ": [
-   "boundary case"
-  ]
  },
  {
   "term": "off-by-one error",
@@ -498,12 +550,6 @@
   "term": "positional argument",
   "sv": "positionellt argument",
   "forklaring": "Ett argument som kopplas till en parameter efter sin plats i anropet.",
-  "vecka": 3
- },
- {
-  "term": "None",
-  "sv": "inget värde",
-  "forklaring": "Pythons värde för \"ingenting\"; det en funktion utan return returnerar.",
   "vecka": 3
  },
  {
@@ -548,19 +594,6 @@
   "alternativ": [
    "refactor"
   ]
- },
- {
-  "term": "module",
-  "sv": "modul",
-  "forklaring": "En Python-fil vars kod kan användas från andra filer med import.",
-  "vecka": 3
- },
- {
-  "term": "import",
-  "sv": "importera",
-  "forklaring": "Att hämta in kod från en annan modul så att den kan användas.",
-  "vecka": 3,
-  "exempel": "from math import pi"
  },
  {
   "term": "package",

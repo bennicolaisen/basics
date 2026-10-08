@@ -31,7 +31,7 @@ används.
   medvetet: programmeringens ord är engelska, i koden, i dokumentation och
   i sökresultat. Efter vecka 4 har du orden som behövs för att läsa
   vidare.
-- **[Ordlistan](ORDLISTA.md)** har alla 273 begrepp i kursen: det
+- **[Ordlistan](ORDLISTA.md)** har alla 278 begrepp i kursen: det
   engelska ordet, en svensk översättning och en förklaring, ordnade efter
   vecka. Du kan öva på dem och bli förhörd, i webbläsaren
   (`ordlista/index.html`) eller i terminalen (`python ordlista/ova.py`).
@@ -42,7 +42,9 @@ används.
 i mappen `ovningar/` som du löser själv och kontrollerar automatiskt med
 `python -m pytest kontroll`. Varje vecka avslutas med ett litet projekt
 som använder allt du lärt dig, och med extra övningar ("Prova själv").
-Totalt drygt 70 kontrollerade övningar, alla med facit.
+Totalt drygt 60 kontrollerade övningar, alla med facit. Kontrollerna
+provar fler fall än exemplen i uppgiften, så det räcker inte att klara
+exemplet.
 
 **Vecka 5–26** är **kompletta, fungerande projekt**, inte tomma uppgifter
 med bitar som saknas. Du laddar ner, kör, läser koden, kör testerna och
@@ -93,7 +95,7 @@ funktioner och samlingar av data.*
 
 | Vecka | Projekt | Ämne |
 |---|---|---|
-| 1 | [`01-unit-converter-toolkit`](Month-1-Python-Foundations/Week-01-unit-converter-toolkit/) | Ditt första program: `print`, variabler, tal och text, `input`, funktioner |
+| 1 | [`01-unit-converter-toolkit`](Month-1-Python-Foundations/Week-01-unit-converter-toolkit/) | Grunderna: `print`, felmeddelanden, variabler och typer, räkning, text och slicing, funktioner, tester |
 | 2 | [`02-input-validators-and-games`](Month-1-Python-Foundations/Week-02-input-validators-and-games/) | Villkor och loopar: `if`/`elif`/`else`, `while`, `for`, `break` |
 | 3 | [`03-function-library`](Month-1-Python-Foundations/Week-03-function-library/) | Funktioner på riktigt: parametrar, returvärden, räckvidd, att dela upp ett program |
 | 4 | [`04-text-analyzer`](Month-1-Python-Foundations/Week-04-text-analyzer/) | Samlingar: `list`, `dict`, `set`, `tuple`, comprehensions |

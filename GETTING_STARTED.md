@@ -33,7 +33,7 @@ klicka på och skriva. Börja där om något ovan känns oklart.
 `README.md`. Den är lektionen.
 
 **Vecka 1–4** (på svenska) är byggda för att du ska skriva mycket kod
-själv, med drygt 70 övningar som kontrolleras automatiskt:
+själv, med drygt 60 övningar som kontrolleras automatiskt:
 
 1. Läs ett steg i genomgången.
 2. Gör stegets övningar i mappen `ovningar/`. Varje fil säger vad du ska
